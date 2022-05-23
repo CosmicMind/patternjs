@@ -30,8 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Identifiable } from './interfaces/Identifiable'
-export type { Nameable } from './interfaces/Nameable'
-export type { Typeable } from './interfaces/Typeable'
-export type { Versionable } from './interfaces/Versionable'
-export type { Serializable } from './interfaces/Serializable'
+/**
+ * @module Typeable
+ */
+
+/**
+ * @template {TType extends string}
+ *
+ * A `Typeable` structure is capable of being identified by a
+ * particular type value.
+ *
+ * @property {TType} type
+ */
+export interface Typeable<TType extends string> {
+  type: TType
+}

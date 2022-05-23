@@ -30,8 +30,18 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Identifiable } from './interfaces/Identifiable'
-export type { Nameable } from './interfaces/Nameable'
-export type { Typeable } from './interfaces/Typeable'
-export type { Versionable } from './interfaces/Versionable'
-export type { Serializable } from './interfaces/Serializable'
+/**
+ * @module Versionable
+ */
+
+/**
+ * @template {T extends number | string}
+ *
+ * A `Versionable` structure is capable of being identified by a 
+ * particular version value.
+ *
+ * @property {T} version
+ */
+export interface Versionable<T extends number | string> {
+  version: T
+}
