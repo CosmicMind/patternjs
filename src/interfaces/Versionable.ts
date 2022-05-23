@@ -35,13 +35,13 @@
  */
 
 /**
- * @template {T extends number | string}
+ * @template TType
  *
- * A `Versionable` structure is capable of being identified by a 
+ * A `Versionable` structure is capable of being identified by a
  * particular version value.
  *
- * @property {T} version
+ * @property {TType} version
  */
-export interface Versionable<T extends number | string> {
-  version: T
+export interface Versionable<TType extends number | string> {
+  version: TType
 }

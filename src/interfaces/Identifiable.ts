@@ -35,7 +35,7 @@
  */
 
 /**
- * @template {TType extends number | string}
+ * @template TType
  *
  * A `Identifiable` structure is capable of being identified by a
  * particular id value.

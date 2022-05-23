@@ -35,7 +35,7 @@
  */
 
 /**
- * @template {TType extends string}
+ * @template TType
  *
  * A `Nameable` structure is capable of being identified by a
  * particular name value.
