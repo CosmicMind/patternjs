@@ -43,8 +43,7 @@ const formats = [ 'es' ]
 const external = [
   'dotenv',
   'eslint',
-  'lib0',
-  'yup'
+  '@cosmicverse/foundation'
 ]
 const globals = {}
 

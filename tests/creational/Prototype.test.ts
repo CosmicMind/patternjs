@@ -30,10 +30,28 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Identifiable } from './interfaces/Identifiable'
-export type { Nameable } from './interfaces/Nameable'
-export type { Typeable } from './interfaces/Typeable'
-export type { Versionable } from './interfaces/Versionable'
-export type { Serializable } from './interfaces/Serializable'
+import test from 'ava'
 
-export type { Prototype } from './creational/Prototype'
+import { assign } from '@cosmicverse/foundation'
+
+import { Prototype } from '../../src'
+
+class A implements Prototype {
+  readonly name = 'Prototype'
+  
+  clone(): this {
+    return assign(Object.create(A.prototype || null), this) as this
+  }
+}
+
+test('Prototype: equal property', async t => {
+  const a = new A()
+  const b = a.clone()
+  t.is(a.name, b.name)
+})
+
+test('Prototype: not equal instance', async t => {
+  const a = new A()
+  const b = a.clone()
+  t.not(a, b)
+})

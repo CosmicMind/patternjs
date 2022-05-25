@@ -30,10 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Identifiable } from './interfaces/Identifiable'
-export type { Nameable } from './interfaces/Nameable'
-export type { Typeable } from './interfaces/Typeable'
-export type { Versionable } from './interfaces/Versionable'
-export type { Serializable } from './interfaces/Serializable'
+/**
+ * @module Prototype
+ */
 
-export type { Prototype } from './creational/Prototype'
+/**
+ * A `Prototype` provides copies of itself rather than instantiating
+ * newly created instances. The `clone` method is used to provide
+ * the copy of the instance.
+ */
+export interface Prototype {
+  clone(): this
+}
