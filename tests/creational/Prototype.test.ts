@@ -32,26 +32,63 @@
 
 import test from 'ava'
 
-import { assign } from '@cosmicverse/foundation'
-
 import { Prototype } from '../../src'
 
-class A implements Prototype {
-  readonly name = 'Prototype'
-  
-  clone(): this {
-    return assign(Object.create(A.prototype || null), this) as this
+class A extends Prototype {
+  readonly name: string
+  readonly age: number
+  readonly location: string
+
+  constructor(name: string, age: number, location: string) {
+    super()
+    this.name = name
+    this.age = age
+    this.location = location
+  }
+
+  myName(): string {
+    return this.name
   }
 }
 
 test('Prototype: equal property', async t => {
-  const a = new A()
+  const name = 'daniel'
+  const age = 38
+  const location = 'CR'
+  const a = new A(name, age, location)
   const b = a.clone()
+  t.is(name, a.name)
+  t.is(age, a.age)
+  t.is(location, a.location)
+  t.is(name, a.myName())
   t.is(a.name, b.name)
+  t.is(a.age, b.age)
+  t.is(a.location, b.location)
+  t.is(a.myName(), b.myName())
 })
 
 test('Prototype: not equal instance', async t => {
-  const a = new A()
+  const name = 'daniel'
+  const age = 38
+  const location = 'CR'
+  const a = new A(name, age, location)
   const b = a.clone()
   t.not(a, b)
+})
+
+test('Prototype: clone equal to clone', async t => {
+  const name = 'daniel'
+  const age = 38
+  const location = 'CR'
+  const a = new A(name, age, location)
+  const b = a.clone()
+  const c = b.clone()
+  t.is(name, b.name)
+  t.is(age, b.age)
+  t.is(location, b.location)
+  t.is(name, a.myName())
+  t.is(b.name, c.name)
+  t.is(b.age, c.age)
+  t.is(b.location, c.location)
+  t.is(b.myName(), c.myName())
 })

@@ -35,5 +35,6 @@ export type { Nameable } from './interfaces/Nameable'
 export type { Typeable } from './interfaces/Typeable'
 export type { Versionable } from './interfaces/Versionable'
 export type { Serializable } from './interfaces/Serializable'
+export type { Prototypeable } from './interfaces/Prototypeable'
 
-export type { Prototype } from './creational/Prototype'
+export { Prototype } from './creational/Prototype'

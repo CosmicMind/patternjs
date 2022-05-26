@@ -31,25 +31,18 @@
  */
 
 /**
- * @module Prototype
+ * @module Prototypeable
  */
-
-import { assign } from '@cosmicverse/foundation'
-
-import { Prototypeable } from '../interfaces/Prototypeable'
 
 /**
- * A `Prototype` provides copies of itself rather than instantiating
- * newly created instances. The `clone` method is used to provide
- * the copy of the instance.
+ * A `Prototypeable` structure is capable of being cloned and producing
+ * a new instance of its type.
  */
-export abstract class Prototype implements Prototypeable {
+export interface Prototypeable {
   /**
    * Creates a copy of itself and returns it.
    *
    * @returns {this}
    */
-  clone(): this {
-    return assign(Object.create(Object.getPrototypeOf(this) || null), this) as this
-  }
+  clone(): this
 }
