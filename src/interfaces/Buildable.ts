@@ -30,5 +30,21 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export * from './creational/Builder.test'
-export * from './creational/Prototype.test'
+/**
+ * @module Buildable
+ */
+
+/**
+ * @template T
+ *
+ * A `Buildable` structure is capable of constructing an instance
+ * in multiple steps.
+ */
+export interface Buildable<T> {
+  /**
+   * Creates a concrete instance of type `T`.
+   *
+   * @returns {Readonly<T>}
+   */
+  build(): Readonly<T>
+}

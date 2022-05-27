@@ -30,5 +30,42 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export * from './creational/Builder.test'
-export * from './creational/Prototype.test'
+/**
+ * @module Builder
+ */
+
+import { Buildable } from '../interfaces/Buildable'
+
+/**
+ * A `Builder`
+ */
+export abstract class Builder<T> implements Buildable<T> {
+  private _definition: T
+
+  constructor() {
+    this._definition = {} as T;
+  }
+
+  set(definition: Partial<T>): this {
+    for (const property in definition) {
+      const value = definition[property]
+      Object.defineProperty(this._definition, property, {
+        configurable: true,
+        enumerable: true,
+        writable: false,
+        value,
+      })
+    }
+    return this
+  }
+
+  build(): Readonly<T> {
+    const model = this._definition
+    this._clear()
+    return Object.seal(model)
+  }
+
+  private _clear() {
+    this._definition = {} as T
+  }
+}
