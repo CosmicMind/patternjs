@@ -30,13 +30,11 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { 
-  Identifiable,
-  Nameable,
-  Typeable,
-  Versionable,
-  Serializable,
-  Prototypeable,
-} from './internal'
+export type { Identifiable } from './interfaces/Identifiable'
+export type { Nameable } from './interfaces/Nameable'
+export type { Typeable } from './interfaces/Typeable'
+export type { Versionable } from './interfaces/Versionable'
+export type { Serializable } from './interfaces/Serializable'
+export type { Prototypeable } from './interfaces/Prototypeable'
 
-export { Prototype } from './internal'
+export { Prototype } from './creational/Prototype'

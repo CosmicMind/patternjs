@@ -32,63 +32,69 @@
 
 import test from 'ava'
 
-import { Prototype } from '../../src'
+import { Prototype } from '../../src/internal'
 
 class A extends Prototype {
-  readonly name: string
-  readonly age: number
+  private _name: string
+  readonly count: number
   readonly location: string
 
-  constructor(name: string, age: number, location: string) {
+  get name(): string {
+    return this._name
+  }
+
+  constructor(name: string, count: number, location: string) {
     super()
-    this.name = name
-    this.age = age
+    this._name = name
+    this.count = count
     this.location = location
   }
 
-  myName(): string {
-    return this.name
+  subtractCount(count: number): number {
+    return this._subtractCount(count)
+  }
+
+  private _subtractCount(count: number): number {
+    return this.count - count
   }
 }
 
 test('Prototype: equal property', async t => {
   const name = 'daniel'
-  const age = 38
+  const count = 38
   const location = 'CR'
-  const a = new A(name, age, location)
+  const a = new A(name, count, location)
   const b = a.clone()
   t.is(name, a.name)
-  t.is(age, a.age)
+  t.is(count, a.count)
   t.is(location, a.location)
-  t.is(name, a.myName())
   t.is(a.name, b.name)
-  t.is(a.age, b.age)
+  t.is(a.count, b.count)
   t.is(a.location, b.location)
-  t.is(a.myName(), b.myName())
+  t.is(a.subtractCount(3), b.subtractCount(3))
 })
 
 test('Prototype: not equal instance', async t => {
   const name = 'daniel'
-  const age = 38
+  const count = 38
   const location = 'CR'
-  const a = new A(name, age, location)
+  const a = new A(name, count, location)
   const b = a.clone()
   t.not(a, b)
 })
 
 test('Prototype: clone equal to clone', async t => {
   const name = 'daniel'
-  const age = 38
+  const count = 38
   const location = 'CR'
-  const a = new A(name, age, location)
+  const a = new A(name, count, location)
   const b = a.clone()
   const c = b.clone()
   t.is(name, b.name)
-  t.is(age, b.age)
+  t.is(count, b.count)
   t.is(location, b.location)
-  t.is(name, a.myName())
   t.is(b.name, c.name)
-  t.is(b.age, c.age)
+  t.is(b.count, c.count)
   t.is(b.location, c.location)
-  t.is(b.myName(), c.myName())
+  t.is(b.subtractCount(5), c.subtractCount(5))
 })
