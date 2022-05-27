@@ -49,7 +49,7 @@ export abstract class Prototype implements Prototypeable {
    *
    * @returns {this}
    */
-  clone(): this {
+  clone() {
     return assign(Object.create(Object.getPrototypeOf(this) || null), this) as this
   }
 }

@@ -59,7 +59,7 @@ class A extends Prototype {
   }
 }
 
-test('Prototype: equal property', async t => {
+test('Prototype: equal properties and functions', async t => {
   const name = 'daniel'
   const count = 38
   const location = 'CR'
@@ -74,7 +74,7 @@ test('Prototype: equal property', async t => {
   t.is(a.subtractCount(3), b.subtractCount(3))
 })
 
-test('Prototype: not equal instance', async t => {
+test('Prototype: instances refs not equal', async t => {
   const name = 'daniel'
   const count = 38
   const location = 'CR'
@@ -97,4 +97,16 @@ test('Prototype: clone equal to clone', async t => {
   t.is(b.count, c.count)
   t.is(b.location, c.location)
   t.is(b.subtractCount(5), c.subtractCount(5))
+})
+
+test('Prototype: correct instanceof detection', async t => {
+  const name = 'daniel'
+  const count = 38
+  const location = 'CR'
+  const a = new A(name, count, location)
+  const b = a.clone()
+  const c = b.clone()
+  t.true(a instanceof A)
+  t.true(b instanceof A)
+  t.true(c instanceof A)
 })
