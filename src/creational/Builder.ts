@@ -40,10 +40,10 @@ import { Buildable } from '../interfaces/Buildable'
  * A `Builder`
  */
 export abstract class Builder<T> implements Buildable<T> {
-  private _definition: T
+  private _definition: Partial<T>
 
   constructor() {
-    this._definition = {} as T;
+    this._definition = {};
   }
 
   set(definition: Partial<T>): this {
@@ -59,13 +59,13 @@ export abstract class Builder<T> implements Buildable<T> {
     return this
   }
 
-  build(): Readonly<T> {
+  build(): Readonly<Partial<T>> {
     const model = this._definition
     this._clear()
     return Object.seal(model)
   }
 
   private _clear() {
-    this._definition = {} as T
+    this._definition = {}
   }
 }
