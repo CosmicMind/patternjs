@@ -35,13 +35,13 @@
  */
 
 /**
- * @template TType
+ * @template T
  *
  * A `Typeable` structure is capable of being identified by a
  * particular type value.
  *
- * @property {TType} type
+ * @property {T} type
  */
-export interface Typeable<TType extends string> {
-  type: TType
+export interface Typeable<T extends string> {
+  type: T
 }

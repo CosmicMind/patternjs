@@ -35,13 +35,13 @@
  */
 
 /**
- * @template TType
+ * @template T
  *
  * A `Identifiable` structure is capable of being identified by a
  * particular id value.
  *
- * @property {TType} type
+ * @property {T} type
  */
-export interface Identifiable<TType extends number | string> {
-  id: TType
+export interface Identifiable<T extends number | string> {
+  id: T
 }

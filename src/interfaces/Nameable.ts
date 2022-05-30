@@ -35,13 +35,13 @@
  */
 
 /**
- * @template TType
+ * @template T
  *
  * A `Nameable` structure is capable of being identified by a
  * particular name value.
  *
- * @property {TType} type
+ * @property {T} type
  */
-export interface Nameable<TType extends string> {
-  name: TType
+export interface Nameable<T extends string> {
+  name: T
 }
