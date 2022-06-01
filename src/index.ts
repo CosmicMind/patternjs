@@ -31,16 +31,16 @@
  */
 
 export type {
-  Buildable,
-  Identifiable,
-  Nameable,
-  Prototypeable,
-  Serializable,
-  Typeable,
-  Versionable,
+    Buildable,
+    Identifiable,
+    Nameable,
+    Prototypeable,
+    Serializable,
+    Typeable,
+    Versionable,
 } from './internal'
 
 export {
-  Builder,
-  Prototype,
+    Builder,
+    Prototype,
 } from './internal'

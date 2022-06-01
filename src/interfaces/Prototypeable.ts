@@ -39,10 +39,10 @@
  * a new instance of its type.
  */
 export interface Prototypeable {
-  /**
-   * Creates a copy of itself and returns it.
-   *
-   * @returns {this}
-   */
-  clone(): this
+    /**
+     * Creates a copy of itself and returns it.
+     *
+     * @returns {this}
+     */
+    clone(): this
 }

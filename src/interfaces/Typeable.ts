@@ -43,5 +43,5 @@
  * @property {T} type
  */
 export interface Typeable<T extends string> {
-  type: T
+    type: T
 }

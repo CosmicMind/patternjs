@@ -41,10 +41,10 @@
  * in multiple steps.
  */
 export interface Buildable<T> {
-  /**
-   * Creates a concrete instance of type `T`.
-   *
-   * @returns {Readonly<Partial<T>>}
-   */
-  build(): Readonly<Partial<T>>
+    /**
+     * Creates a concrete instance of type `T`.
+     *
+     * @returns {Readonly<Partial<T>>}
+     */
+    build(): Readonly<Partial<T>>
 }

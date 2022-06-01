@@ -32,33 +32,34 @@
 
 import test from 'ava'
 
-import { Builder } from '../../src/internal'
+import {Builder} from '../../src/internal'
 
 interface Query {
-  tags: string[]
-  project: string
-  version: number
+    tags: string[]
+    project: string
+    version: number
 }
 
-class QueryBuilder extends Builder<Query> {}
+class QueryBuilder extends Builder<Query> {
+}
 
 test('Builder: build against interface', async t => {
-  const tags = [
-    'typescript',
-    'coding',
-    'language'
-  ];
-  const project = 'patterns'
-  const version = 1
+    const tags = [
+        'typescript',
+        'coding',
+        'language'
+    ];
+    const project = 'patterns'
+    const version = 1
 
-  const qb = new QueryBuilder()
+    const qb = new QueryBuilder()
 
-  qb.set({ tags, project })
-  qb.set({ version })
+    qb.set({tags, project})
+    qb.set({version})
 
-  const q = qb.build()
+    const q = qb.build()
 
-  t.is(tags, q.tags)
-  t.is(project, q.project)
-  t.is(version, q.version)
+    t.is(tags, q.tags)
+    t.is(project, q.project)
+    t.is(version, q.version)
 })

@@ -43,5 +43,5 @@
  * @property {T} version
  */
 export interface Versionable<T extends number | string> {
-  version: T
+    version: T
 }

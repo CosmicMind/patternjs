@@ -34,9 +34,9 @@
  * @module Prototype
  */
 
-import { assign } from '@cosmicverse/foundation'
+import {assign} from '@cosmicverse/foundation'
 
-import { Prototypeable } from '../interfaces/Prototypeable'
+import {Prototypeable} from '../interfaces/Prototypeable'
 
 /**
  * A `Prototype` provides copies of itself rather than instantiating
@@ -44,12 +44,12 @@ import { Prototypeable } from '../interfaces/Prototypeable'
  * the copy of the instance.
  */
 export abstract class Prototype implements Prototypeable {
-  /**
-   * Creates a copy of itself and returns it.
-   *
-   * @returns {this}
-   */
-  clone() {
-    return assign(Object.create(Object.getPrototypeOf(this) || null), this) as this
-  }
+    /**
+     * Creates a copy of itself and returns it.
+     *
+     * @returns {this}
+     */
+    clone() {
+        return assign(Object.create(Object.getPrototypeOf(this) || null), this) as this
+    }
 }

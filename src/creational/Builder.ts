@@ -34,38 +34,38 @@
  * @module Builder
  */
 
-import { Buildable } from '../interfaces/Buildable'
+import {Buildable} from '../interfaces/Buildable'
 
 /**
  * A `Builder`
  */
 export abstract class Builder<T> implements Buildable<T> {
-  private _definition: Partial<T>
+    private _definition: Partial<T>
 
-  constructor() {
-    this._definition = {};
-  }
-
-  set(definition: Partial<T>): this {
-    for (const property in definition) {
-      const value = definition[property]
-      Object.defineProperty(this._definition, property, {
-        configurable: true,
-        enumerable: true,
-        writable: false,
-        value,
-      })
+    constructor() {
+        this._definition = {};
     }
-    return this
-  }
 
-  build(): Readonly<Partial<T>> {
-    const model = this._definition
-    this._clear()
-    return Object.seal(model)
-  }
+    set(definition: Partial<T>): this {
+        for (const property in definition) {
+            const value = definition[property]
+            Object.defineProperty(this._definition, property, {
+                configurable: true,
+                enumerable: true,
+                writable: false,
+                value,
+            })
+        }
+        return this
+    }
 
-  private _clear() {
-    this._definition = {}
-  }
+    build(): Readonly<Partial<T>> {
+        const model = this._definition
+        this._clear()
+        return Object.seal(model)
+    }
+
+    private _clear() {
+        this._definition = {}
+    }
 }

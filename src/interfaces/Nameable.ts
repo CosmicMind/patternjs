@@ -43,5 +43,5 @@
  * @property {T} type
  */
 export interface Nameable<T extends string> {
-  name: T
+    name: T
 }
