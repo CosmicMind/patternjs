@@ -53,7 +53,10 @@ test('Builder: build against interface', async t => {
 
   const qb = new QueryBuilder()
 
-  qb.set({ tags, project })
+  qb.set({
+    tags,
+    project,
+  })
   qb.set({ version })
 
   const q = qb.build()
