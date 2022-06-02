@@ -41,10 +41,10 @@
  * @property {string} serialized
  */
 export interface Serializable {
-    /**
-     * Converts the implementation class to a serialized value.
-     *
-     * @type {string}
-     */
-    get serialized(): string
+  /**
+   * Converts the implementation class to a serialized value.
+   *
+   * @type {string}
+   */
+  get serialized(): string
 }

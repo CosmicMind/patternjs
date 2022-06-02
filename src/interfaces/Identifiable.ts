@@ -43,5 +43,5 @@
  * @property {T} type
  */
 export interface Identifiable<T extends number | string> {
-    id: T
+  id: T
 }

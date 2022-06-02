@@ -32,81 +32,81 @@
 
 import test from 'ava'
 
-import {Prototype} from '../../src/internal'
+import { Prototype } from '../../src/internal'
 
 class A extends Prototype {
-    private _name: string
-    readonly count: number
-    readonly location: string
+  private _name: string
+  readonly count: number
+  readonly location: string
 
-    get name(): string {
-        return this._name
-    }
+  get name(): string {
+    return this._name
+  }
 
-    constructor(name: string, count: number, location: string) {
-        super()
-        this._name = name
-        this.count = count
-        this.location = location
-    }
+  constructor(name: string, count: number, location: string) {
+    super()
+    this._name = name
+    this.count = count
+    this.location = location
+  }
 
-    subtractCount(count: number): number {
-        return this._subtractCount(count)
-    }
+  subtractCount(count: number): number {
+    return this._subtractCount(count)
+  }
 
-    private _subtractCount(count: number): number {
-        return this.count - count
-    }
+  private _subtractCount(count: number): number {
+    return this.count - count
+  }
 }
 
 test('Prototype: equal properties and functions', async t => {
-    const name = 'daniel'
-    const count = 38
-    const location = 'CR'
-    const a = new A(name, count, location)
-    const b = a.clone()
-    t.is(name, a.name)
-    t.is(count, a.count)
-    t.is(location, a.location)
-    t.is(a.name, b.name)
-    t.is(a.count, b.count)
-    t.is(a.location, b.location)
-    t.is(a.subtractCount(3), b.subtractCount(3))
+  const name = 'daniel'
+  const count = 38
+  const location = 'CR'
+  const a = new A(name, count, location)
+  const b = a.clone()
+  t.is(name, a.name)
+  t.is(count, a.count)
+  t.is(location, a.location)
+  t.is(a.name, b.name)
+  t.is(a.count, b.count)
+  t.is(a.location, b.location)
+  t.is(a.subtractCount(3), b.subtractCount(3))
 })
 
 test('Prototype: instances refs not equal', async t => {
-    const name = 'daniel'
-    const count = 38
-    const location = 'CR'
-    const a = new A(name, count, location)
-    const b = a.clone()
-    t.not(a, b)
+  const name = 'daniel'
+  const count = 38
+  const location = 'CR'
+  const a = new A(name, count, location)
+  const b = a.clone()
+  t.not(a, b)
 })
 
 test('Prototype: clone equal to clone', async t => {
-    const name = 'daniel'
-    const count = 38
-    const location = 'CR'
-    const a = new A(name, count, location)
-    const b = a.clone()
-    const c = b.clone()
-    t.is(name, b.name)
-    t.is(count, b.count)
-    t.is(location, b.location)
-    t.is(b.name, c.name)
-    t.is(b.count, c.count)
-    t.is(b.location, c.location)
-    t.is(b.subtractCount(5), c.subtractCount(5))
+  const name = 'daniel'
+  const count = 38
+  const location = 'CR'
+  const a = new A(name, count, location)
+  const b = a.clone()
+  const c = b.clone()
+  t.is(name, b.name)
+  t.is(count, b.count)
+  t.is(location, b.location)
+  t.is(b.name, c.name)
+  t.is(b.count, c.count)
+  t.is(b.location, c.location)
+  t.is(b.subtractCount(5), c.subtractCount(5))
 })
 
 test('Prototype: correct instanceof detection', async t => {
-    const name = 'daniel'
-    const count = 38
-    const location = 'CR'
-    const a = new A(name, count, location)
-    const b = a.clone()
-    const c = b.clone()
-    t.true(a instanceof A)
-    t.true(b instanceof A)
-    t.true(c instanceof A)
+  const name = 'daniel'
+  const count = 38
+  const location = 'CR'
+  const a = new A(name, count, location)
+  const b = a.clone()
+  const c = b.clone()
+  t.true(a instanceof A)
+  t.true(b instanceof A)
+  t.true(c instanceof A)
 })
