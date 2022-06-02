@@ -40,15 +40,14 @@ interface Query {
   version: number
 }
 
-class QueryBuilder extends Builder<Query> {
-}
+class QueryBuilder extends Builder<Query> {}
 
 test('Builder: build against interface', async t => {
   const tags = [
     'typescript',
     'coding',
     'language'
-  ];
+  ]
   const project = 'patterns'
   const version = 1
 

@@ -43,7 +43,7 @@ export abstract class Builder<T> implements Buildable<T> {
   private _definition: Partial<T>
 
   constructor() {
-    this._definition = {};
+    this._definition = {}
   }
 
   set(definition: Partial<T>): this {
