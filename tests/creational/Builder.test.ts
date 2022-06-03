@@ -42,7 +42,7 @@ interface Query {
 
 class QueryBuilder extends Builder<Query> {}
 
-test('Builder: build against interface', async t => {
+test('Builder: build against interface', t => {
   const tags = [
     'typescript',
     'coding',

@@ -40,16 +40,16 @@ import { Buildable } from '../interfaces/Buildable'
  * A `Builder`
  */
 export abstract class Builder<T> implements Buildable<T> {
-  private _definition: Partial<T>
+  #definition: Partial<T>
 
   constructor() {
-    this._definition = {}
+    this.#definition = {}
   }
 
-  set(definition: Partial<T>): this {
-    for (const property in definition) {
-      const value = definition[property]
-      Object.defineProperty(this._definition, property, {
+  set(props: Partial<T>): this {
+    for (const p in props) {
+      const value = props[p]
+      Object.defineProperty(this.#definition, p, {
         configurable: true,
         enumerable: true,
         writable: false,
@@ -60,12 +60,12 @@ export abstract class Builder<T> implements Buildable<T> {
   }
 
   build(): Readonly<T> {
-    const model = this._definition
-    this._clear()
-    return Object.seal(model) as T
+    const instance = this.#definition
+    this.#clear()
+    return Object.seal(instance) as T
   }
 
-  private _clear() {
-    this._definition = {}
+  #clear() {
+    this.#definition = {}
   }
 }
