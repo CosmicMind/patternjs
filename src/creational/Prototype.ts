@@ -40,7 +40,7 @@ import { Prototypeable } from '../interfaces/Prototypeable'
 
 /**
  * A `Prototype` provides copies of itself rather than instantiating
- * newly created instances. The `clone` method is used to provide
+ * newly created instances. The `assign` method is used to provide
  * the copy of the instance.
  */
 export abstract class Prototype implements Prototypeable {
