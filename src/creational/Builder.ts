@@ -34,7 +34,20 @@
  * @module Builder
  */
 
-import { Buildable } from '../interfaces/Buildable'
+/**
+ * @template T
+ *
+ * A `Buildable` structure is capable of constructing an instance
+ * in multiple steps.
+ */
+export interface Buildable<T> {
+  /**
+   * Creates a concrete instance of type `T`.
+   *
+   * @returns {Readonly<T>}
+   */
+  build(): Readonly<T>
+}
 
 /**
  * A `Builder`

@@ -30,10 +30,8 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Buildable } from './interfaces/Buildable'
 export type { Identifiable } from './interfaces/Identifiable'
 export type { Nameable } from './interfaces/Nameable'
-export type { Prototypeable } from './interfaces/Prototypeable'
 export type { Serializable } from './interfaces/Serializable'
 export type { Typeable } from './interfaces/Typeable'
 export type { Versionable } from './interfaces/Versionable'

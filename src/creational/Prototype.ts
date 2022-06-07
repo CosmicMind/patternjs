@@ -36,7 +36,18 @@
 
 import { assign } from '@cosmicverse/foundation'
 
-import { Prototypeable } from '../interfaces/Prototypeable'
+/**
+ * A `Prototypeable` structure is capable of being cloned and producing
+ * a new instance of its type.
+ */
+export interface Prototypeable {
+  /**
+   * Creates a copy of itself and returns it.
+   *
+   * @returns {this}
+   */
+  clone(): this
+}
 
 /**
  * A `Prototype` provides copies of itself rather than instantiating

@@ -31,10 +31,8 @@
  */
 
 export type {
-  Buildable,
   Identifiable,
   Nameable,
-  Prototypeable,
   Serializable,
   Typeable,
   Versionable,
