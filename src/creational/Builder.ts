@@ -65,7 +65,7 @@ export abstract class Builder<T> implements Buildable<T> {
     return Object.seal(instance) as T
   }
 
-  #clear() {
+  #clear(): void {
     this.#definition = {}
   }
 }
