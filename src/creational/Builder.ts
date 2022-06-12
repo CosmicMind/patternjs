@@ -34,13 +34,15 @@
  * @module Builder
  */
 
+import { Mutable } from '@cosmicverse/foundation'
+
 /**
  * @template T
  *
  * A `Buildable` structure is capable of constructing an instance
  * in multiple steps.
  */
-export interface Buildable<T extends object> {
+export interface Buildable<T> {
   /**
    * Creates a concrete instance of type `T`.
    *
@@ -52,8 +54,8 @@ export interface Buildable<T extends object> {
 /**
  * A `Builder`
  */
-export abstract class Builder<T extends object> implements Buildable<T> {
-  #definition: Partial<T>
+export abstract class Builder<T> implements Buildable<T> {
+  #definition: Partial<Mutable<T>>
 
   constructor() {
     this.#definition = {}
