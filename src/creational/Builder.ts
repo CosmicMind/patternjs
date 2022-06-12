@@ -69,15 +69,9 @@ export abstract class Builder<T extends object> implements Buildable<T> {
     return this
   }
 
-  map(props: Partial<T>): this {
-    for (const key in props) {
-      const value = props[key]
-      Object.defineProperty(this.#definition, key, {
-        configurable: true,
-        enumerable: true,
-        writable: false,
-        value,
-      })
+  map<K extends keyof T, V extends T[K]>(props: Partial<T>): this {
+    for (const [ key, value ] of Object.entries(props)) {
+      this.set(key as K, value as V)
     }
     return this
   }
