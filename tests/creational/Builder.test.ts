@@ -35,33 +35,34 @@ import test from 'ava'
 import { Builder } from '../../src'
 
 interface Query {
-  tags: string[]
   project: string
   version: number
+  tags: string[]
 }
 
 class QueryBuilder extends Builder<Query> {}
 
-test('Builder: build against interface', t => {
+test('Builder: set/map', t => {
+  const project = 'patterns'
+  const version = 1
   const tags = [
     'typescript',
     'coding',
     'language'
   ]
-  const project = 'patterns'
-  const version = 1
 
   const qb = new QueryBuilder()
 
-  qb.set({
+  qb.set('project', project)
+
+  qb.map({
     tags,
-    project,
+    version,
   })
-  qb.set({ version })
 
   const q = qb.build()
 
-  t.is(tags, q.tags)
   t.is(project, q.project)
   t.is(version, q.version)
+  t.is(tags, q.tags)
 })

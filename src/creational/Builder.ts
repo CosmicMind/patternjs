@@ -40,7 +40,7 @@
  * A `Buildable` structure is capable of constructing an instance
  * in multiple steps.
  */
-export interface Buildable<T> {
+export interface Buildable<T extends object> {
   /**
    * Creates a concrete instance of type `T`.
    *
@@ -52,17 +52,27 @@ export interface Buildable<T> {
 /**
  * A `Builder`
  */
-export abstract class Builder<T> implements Buildable<T> {
+export abstract class Builder<T extends object> implements Buildable<T> {
   #definition: Partial<T>
 
   constructor() {
     this.#definition = {}
   }
 
-  set(props: Partial<T>): this {
-    for (const p in props) {
-      const value = props[p]
-      Object.defineProperty(this.#definition, p, {
+  set<K extends keyof T>(key: K, value: T[K]): this {
+    Object.defineProperty(this.#definition, key, {
+      configurable: true,
+      enumerable: true,
+      writable: false,
+      value,
+    })
+    return this
+  }
+
+  map(props: Partial<T>): this {
+    for (const key in props) {
+      const value = props[key]
+      Object.defineProperty(this.#definition, key, {
         configurable: true,
         enumerable: true,
         writable: false,
