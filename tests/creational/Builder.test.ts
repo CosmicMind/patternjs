@@ -40,8 +40,6 @@ interface Query {
   tags: string[]
 }
 
-class QueryBuilder extends Builder<Query> {}
-
 test('Builder: set/map', t => {
   const project = 'projects'
   const version = 1
@@ -51,7 +49,7 @@ test('Builder: set/map', t => {
     'language'
   ]
 
-  const qb = new QueryBuilder()
+  const qb = new Builder<Query>()
 
   qb.set('project', project)
 

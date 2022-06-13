@@ -54,7 +54,7 @@ export interface Buildable<T> {
 /**
  * A `Builder`
  */
-export abstract class Builder<T> implements Buildable<T> {
+export class Builder<T> implements Buildable<T> {
   #definition: Partial<Mutable<T>>
 
   constructor() {
@@ -81,7 +81,7 @@ export abstract class Builder<T> implements Buildable<T> {
   build(): Readonly<T> {
     const instance = this.#definition
     this.#clear()
-    return Object.seal(instance) as Readonly<T>
+    return instance
   }
 
   #clear(): void {
