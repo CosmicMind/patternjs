@@ -43,7 +43,7 @@ interface Query {
 class QueryBuilder extends Builder<Query> {}
 
 test('Builder: set/map', t => {
-  const project = 'patterns'
+  const project = 'projects'
   const version = 1
   const tags = [
     'typescript',

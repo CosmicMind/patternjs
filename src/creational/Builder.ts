@@ -61,7 +61,7 @@ export abstract class Builder<T> implements Buildable<T> {
     this.#definition = {}
   }
 
-  set<K extends keyof T>(key: K, value: T[K]): this {
+  set<K extends keyof T, V extends T[K]>(key: K, value: V): this {
     Object.defineProperty(this.#definition, key, {
       configurable: true,
       enumerable: true,
@@ -81,7 +81,7 @@ export abstract class Builder<T> implements Buildable<T> {
   build(): Readonly<T> {
     const instance = this.#definition
     this.#clear()
-    return Object.seal(instance) as T
+    return Object.seal(instance) as Readonly<T>
   }
 
   #clear(): void {
