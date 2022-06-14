@@ -35,12 +35,8 @@
  */
 
 /**
- * @template T
- *
  * A `Nameable` structure is capable of being identified by a
  * particular name value.
- *
- * @property {T} type
  */
 export interface Nameable<T extends string> {
   name: T

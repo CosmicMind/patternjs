@@ -45,8 +45,6 @@ import { Mutable } from '@cosmicverse/foundation'
 export interface Buildable<T> {
   /**
    * Creates a concrete instance of type `T`.
-   *
-   * @returns {Readonly<T>}
    */
   build(): Readonly<T>
 }
@@ -81,7 +79,7 @@ export class Builder<T> implements Buildable<T> {
   build(): Readonly<T> {
     const instance = this.#definition
     this.#clear()
-    return instance
+    return instance as T
   }
 
   #clear(): void {

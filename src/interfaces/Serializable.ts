@@ -37,14 +37,10 @@
 /**
  * The `Serializable` protocol defines the implementation
  * criteria that adheres to the given protocol.
- *
- * @property {string} serialized
  */
 export interface Serializable {
   /**
    * Converts the implementation class to a serialized value.
-   *
-   * @type {string}
    */
   get serialized(): string
 }

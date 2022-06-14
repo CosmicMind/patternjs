@@ -39,8 +39,6 @@
  *
  * A `Typeable` structure is capable of being identified by a
  * particular type value.
- *
- * @property {T} type
  */
 export interface Typeable<T extends string> {
   type: T

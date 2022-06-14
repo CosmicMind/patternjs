@@ -43,8 +43,6 @@ import { assign } from '@cosmicverse/foundation'
 export interface Prototypeable {
   /**
    * Creates a copy of itself and returns it.
-   *
-   * @returns {this}
    */
   clone(): this
 }
@@ -57,8 +55,6 @@ export interface Prototypeable {
 export abstract class Prototype implements Prototypeable {
   /**
    * Creates a copy of itself and returns it.
-   *
-   * @returns {this}
    */
   clone(): this {
     return assign(Object.create(Object.getPrototypeOf(this) || null), this) as this
