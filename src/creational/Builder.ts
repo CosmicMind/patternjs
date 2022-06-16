@@ -34,8 +34,6 @@
  * @module Builder
  */
 
-import { Mutable } from '@cosmicverse/foundation'
-
 /**
  * @template T
  *
@@ -52,15 +50,15 @@ export interface Buildable<T> {
 /**
  * A `Builder`
  */
-export class Builder<T> implements Buildable<T> {
-  #definition: Partial<Mutable<T>>
+export class Builder<T extends object, P extends keyof T = keyof T> implements Buildable<T> {
+  #model: Partial<T>
 
-  constructor() {
-    this.#definition = {}
+  constructor(props: Partial<T> = {}) {
+    this.#model = props
   }
 
-  set<K extends keyof T, V extends T[K]>(key: K, value: V): this {
-    Object.defineProperty(this.#definition, key, {
+  set<K extends P, V extends T[K]>(key: K, value: V): this {
+    Object.defineProperty(this.#model, key, {
       configurable: true,
       enumerable: true,
       writable: false,
@@ -69,7 +67,7 @@ export class Builder<T> implements Buildable<T> {
     return this
   }
 
-  map<K extends keyof T, V extends T[K]>(props: Partial<T>): this {
+  map<K extends P, V extends T[K]>(props: Partial<Pick<T, P>>): this {
     for (const [ key, value ] of Object.entries(props)) {
       this.set(key as K, value as V)
     }
@@ -77,12 +75,12 @@ export class Builder<T> implements Buildable<T> {
   }
 
   build(): Readonly<T> {
-    const instance = this.#definition
+    const instance = this.#model
     this.#clear()
     return instance as T
   }
 
   #clear(): void {
-    this.#definition = {}
+    this.#model = {}
   }
 }

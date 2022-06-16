@@ -32,15 +32,19 @@
 
 import test from 'ava'
 
+import { guardFor } from '@cosmicverse/foundation'
+
 import { Builder } from '../../src'
 
 interface Query {
+  url: string
   project: string
   version: number
   tags: string[]
 }
 
 test('Builder: set/map', t => {
+  const url = 'http://localhost:8080'
   const project = 'projects'
   const version = 1
   const tags = [
@@ -49,18 +53,32 @@ test('Builder: set/map', t => {
     'language'
   ]
 
-  const qb = new Builder<Query>()
-
-  qb.set('project', project)
-
-  qb.map({
-    tags,
+  const qb = new Builder<Query, 'url' | 'tags' | 'project'>({
     version,
   })
 
-  const q = qb.build()
+  qb.set('project', project)
+  qb.set('url', url)
 
-  t.is(project, q.project)
-  t.is(version, q.version)
-  t.is(tags, q.tags)
+  qb.map({
+    tags,
+  })
+
+  const q1 = qb.build()
+
+  const keys = Object.keys(q1) as (keyof Query)[]
+
+  t.true(guardFor(q1, ...keys))
+  t.is(url, q1.url)
+  t.is(project, q1.project)
+  t.is(version, q1.version)
+  t.is(tags, q1.tags)
+
+  const q2 = qb.build()
+
+  t.true(guardFor(q1, ...keys))
+  t.true('undefined' === typeof q2.url)
+  t.true('undefined' === typeof q2.project)
+  t.true('undefined' === typeof q2.version)
+  t.true('undefined' === typeof q2.tags)
 })
