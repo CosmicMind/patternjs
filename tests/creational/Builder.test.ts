@@ -41,17 +41,11 @@ import {
 import { Builder } from '../../src'
 
 interface Query {
-  readonly project?: string
+  project: string
   version: number
   tags?: string[]
 }
 
-interface Request {
-  readonly url: string
-  query?: Query
-}
-
-const url = 'http://localhost:8080'
 const project = 'projects'
 const version = 1
 const tags = [
@@ -61,71 +55,41 @@ const tags = [
 ]
 
 test('Builder: set', t => {
-  const qb = new Builder<Required<Query>>({
+  const qb = new Builder<Query>({
     project,
     version,
-    tags,
   })
 
-  qb.set('project', project)
   qb.set('tags', tags)
 
   const q = qb.build()
 
-  t.false('undefined' === typeof q.project)
+  t.true(guardFor(q, ...Object.keys(q) as (keyof Query)[]))
+
   t.is(project, q.project)
   t.is(version, q.version)
-  t.is(tags, q.tags)
+
+  t.true('undefined' !== typeof q.tags)
+  t.is(tags, q.tags as string[])
 })
 
 test('Builder: map', t => {
-  const qb = new Builder<Query, 'project' | 'tags'>({
+  const qb = new Builder<Query>({
+    project,
     version,
   })
 
   qb.map({
-    project,
     tags,
   })
 
   const q = qb.build()
 
   t.true(guardFor(q, ...Object.keys(q) as (keyof Query)[]))
+
   t.is(project, q.project)
   t.is(version, q.version)
-  t.is(tags, q.tags)
-})
 
-test('Builder: undefined', t => {
-  const qb = new Builder<Query, 'project' | 'tags'>()
-
-  const q = qb.build()
-
-  t.true(guardFor(q, ...Object.keys(q) as (keyof Query)[]))
-  t.true('undefined' === typeof q.project)
-  t.true('undefined' === typeof q.version)
-  t.true('undefined' === typeof q.tags)
-})
-
-test('Builder: RequiredOnly', t => {
-  const req = new Builder<RequiredOnly<Request>>()
-
-  req.set('url', url)
-
-  const r = req.build()
-
-  t.is(url, r.url)
-})
-
-test('Builder: RequiredOnly', t => {
-  const qb = new Builder<Query>()
-  const q = qb.build()
-
-  const req = new Builder<OptionalOnly<Request>>()
-
-  req.set('query', q)
-
-  const r = req.build()
-
-  t.is(q, r.query)
+  t.true('undefined' !== typeof q.tags)
+  t.is(tags, q.tags as string[])
 })

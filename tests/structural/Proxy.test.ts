@@ -35,6 +35,7 @@ import test from 'ava'
 import {
   createProxy,
   ProxyPropertyValidator,
+  ProxyValidationError,
 } from '../../src'
 
 interface User {
@@ -73,6 +74,22 @@ test('Proxy: createProxy', t => {
   }
 
   const proxy = createProxy(target, validator)
+
+  try {
+    proxy.name = ''
+    t.false(true)
+  }
+  catch (error) {
+    if (error instanceof ProxyValidationError) {
+      t.is(error.name, 'ProxyValidationError')
+      t.is(error.message, 'name is invalid')
+      t.is(error.toString(), `[${error.name} ${error.message}]`)
+    }
+    else {
+      t.false(true)
+    }
+  }
+
   proxy.name = 'daniel'
 
   t.is(id, proxy.id)

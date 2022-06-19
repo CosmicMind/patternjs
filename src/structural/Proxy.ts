@@ -34,35 +34,64 @@
  * @module Proxy
  */
 
-import { 
+import {
   clone,
-  Optional,
+  FoundationTypeError,
 } from '@cosmicverse/foundation'
 
 export type ProxyPropertyKey<T> = keyof T extends string | symbol ? keyof T : never
 
 export type ProxyPropertyValidator<T> = Record<keyof T, { validate(value: T[keyof T], state: Readonly<T>): boolean }>
 
+/**
+ * The `ProxyValidationError`.
+ */
+export class ProxyValidationError extends FoundationTypeError {}
+
 export function createProxyHandler<T extends object>(validator: ProxyPropertyValidator<T>): ProxyHandler<T> {
   let state = clone({})
 
   return {
+    /**
+     * The `has` checks whether a value exists in the
+     * model definition, or in the instance itself.
+     * The search is ordered as: immutable, mutable, virtual,
+     * and then instance.
+     */
     has<P extends ProxyPropertyKey<T>>(target: T, prop: P): boolean {
       return Reflect.has(target, prop)
     },
 
-    set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean {
-      if (!validator[prop].validate.call(target, value, state as Readonly<T>)) {
-        return false
-      }
-      state = clone(target)
-      return Reflect.set(target, prop, value)
-    },
-
+    /**
+     * The `get` fetches the property value for the give property
+     * key. The search is ordered as: immutable, mutable, virtual,
+     * and then instance.
+     */
     get<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P): V {
       return Reflect.get(target, prop)
     },
 
+    /**
+     * The `set` updates the given property with the given value.
+     * The property key and value are checked against the
+     * `ProxySchema`. The search is ordered as: immutable, virtual,
+     * and then mutable.
+     */
+    set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean | never {
+      if (!validator[prop].validate.call(target, value, state as Readonly<T>)) {
+        throw new ProxyValidationError(`${String(prop)} is invalid`)
+      }
+      else {
+        state = clone(target)
+        return Reflect.set(target, prop, value)
+      }
+    },
+
+    /**
+     * The `deleteProperty` deletes the given property so long as
+     * the property is not defined in the `ProxySchema`. The
+     * search is ordered as: immutable, mutable, and then virtual.
+     */
     deleteProperty<P extends ProxyPropertyKey<T>>(target: T, prop: P): boolean {
       return Reflect.deleteProperty(target, prop)
     },
