@@ -30,14 +30,52 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @module Typeable
- */
+import test from 'ava'
 
-/**
- * A `Typeable` structure is capable of being identified by a
- * particular type value.
- */
-export interface Typeable<T extends string> {
-  type: T
+import {
+  createProxy,
+  ProxyPropertyValidator,
+} from '../../src'
+
+interface User {
+  readonly id: string
+  readonly created: Date
+  name: string
 }
+
+test('Proxy: createProxy', t => {
+  const id ='123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target: User = {
+    id,
+    created,
+    name: 'jonathan',
+  }
+
+  const validator: ProxyPropertyValidator<User> = {
+    id: {
+      validate(value: string): boolean {
+        return 2 < value.length
+      },
+    },
+    created: {
+      validate(value: Date): boolean {
+        return value instanceof Date
+      },
+    },
+    name: {
+      validate(value: string): boolean {
+        return 2 < value.length
+      },
+    },
+  }
+
+  const proxy = createProxy(target, validator)
+  proxy.name = 'daniel'
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.is(name, proxy.name)
+})

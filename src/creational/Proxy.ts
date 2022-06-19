@@ -30,11 +30,51 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Identifiable } from './interfaces/Identifiable'
-export type { Nameable } from './interfaces/Nameable'
-export type { Serializable } from './interfaces/Serializable'
-export type { Typeable } from './interfaces/Typeable'
-export type { Versionable } from './interfaces/Versionable'
+/**
+ * @module Proxy
+ */
 
-export { Builder } from './creational/Builder'
-export { Prototype } from './creational/Prototype'
+import { 
+  clone,
+  Optional,
+} from '@cosmicverse/foundation'
+
+export type ProxyPropertyKey<T> = keyof T extends string | symbol ? keyof T : never
+
+export type ProxyPropertyValidator<T> = Record<keyof T, { validate(value: T[keyof T], state: Readonly<T>): boolean }>
+
+export function createProxyHandler<T extends object>(validator: ProxyPropertyValidator<T>): ProxyHandler<T> {
+  let state = clone({})
+
+  return {
+    has<P extends ProxyPropertyKey<T>>(target: T, prop: P): boolean {
+      return Reflect.has(target, prop)
+    },
+
+    set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean {
+      if (!validator[prop].validate.call(target, value, state as Readonly<T>)) {
+        return false
+      }
+      state = clone(target)
+      return Reflect.set(target, prop, value)
+    },
+
+    get<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P): V {
+      return Reflect.get(target, prop)
+    },
+
+    deleteProperty<P extends ProxyPropertyKey<T>>(target: T, prop: P): boolean {
+      return Reflect.deleteProperty(target, prop)
+    },
+  }
+}
+
+export function createProxyTarget<T extends object>(target: T): T {
+  return {
+    ...target,
+  }
+}
+
+export function createProxy<T extends object, Q extends ProxyPropertyValidator<T>>(target: T, validator: Q): T {
+  return new Proxy(createProxyTarget(target), createProxyHandler(validator))
+}

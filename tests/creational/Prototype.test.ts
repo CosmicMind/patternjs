@@ -32,7 +32,7 @@
 
 import test from 'ava'
 
-import { Prototype } from '../../src/internal'
+import { Prototype } from '../../src'
 
 class A extends Prototype {
   private _name: string

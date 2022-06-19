@@ -35,8 +35,6 @@
  */
 
 /**
- * @template T
- *
  * A `Buildable` structure is capable of constructing an instance
  * in multiple steps.
  */
@@ -50,15 +48,15 @@ export interface Buildable<T> {
 /**
  * A `Builder`
  */
-export class Builder<T extends object, P extends keyof T = keyof T> implements Buildable<T> {
-  #model: Partial<T>
+export class Builder<T, K extends keyof T = keyof T> implements Buildable<T> {
+  #model: T
 
-  constructor(props: Partial<T> = {}) {
+  constructor(props: T) {
     this.#model = props
   }
 
-  set<K extends P, V extends T[K]>(key: K, value: V): this {
-    Object.defineProperty(this.#model, key, {
+  set<P extends K, V extends T[P]>(prop: P, value: V): this {
+    Object.defineProperty(this.#model, prop, {
       configurable: true,
       enumerable: true,
       writable: false,
@@ -67,9 +65,9 @@ export class Builder<T extends object, P extends keyof T = keyof T> implements B
     return this
   }
 
-  map<K extends P, V extends T[K]>(props: Partial<Pick<T, P>>): this {
+  map<P extends K, V extends T[P]>(props: Partial<Pick<T, K>>): this {
     for (const [ key, value ] of Object.entries(props)) {
-      this.set(key as K, value as V)
+      this.set(key as P, value as V)
     }
     return this
   }
@@ -81,6 +79,6 @@ export class Builder<T extends object, P extends keyof T = keyof T> implements B
   }
 
   #clear(): void {
-    this.#model = {}
+    this.#model = {} as T
   }
 }

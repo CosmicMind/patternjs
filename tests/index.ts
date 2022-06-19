@@ -30,5 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export * from './creational/Builder.test'
-export * from './creational/Prototype.test'
+// export * from './creational/Builder.test'
+// export * from './creational/Prototype.test'
+export * from './creational/Proxy.test'

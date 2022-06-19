@@ -30,15 +30,22 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+export type { Identifiable } from './interfaces/Identifiable'
+export type { Nameable } from './interfaces/Nameable'
+export type { Serializable } from './interfaces/Serializable'
+export type { Typeable } from './interfaces/Typeable'
+export type { Versionable } from './interfaces/Versionable'
+
+export { Builder } from './creational/Builder'
+export { Prototype } from './creational/Prototype'
+
 export type {
-  Identifiable,
-  Nameable,
-  Serializable,
-  Typeable,
-  Versionable,
-} from './internal'
+  ProxyPropertyKey,
+  ProxyPropertyValidator,
+} from './creational/Proxy'
 
 export {
-  Builder,
-  Prototype,
-} from './internal'
+  createProxyHandler,
+  createProxyTarget,
+  createProxy,
+} from './creational/Proxy'

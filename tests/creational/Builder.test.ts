@@ -32,53 +32,100 @@
 
 import test from 'ava'
 
-import { guardFor } from '@cosmicverse/foundation'
+import {
+  guardFor,
+  RequiredOnly,
+  OptionalOnly,
+} from '@cosmicverse/foundation'
 
 import { Builder } from '../../src'
 
 interface Query {
-  url: string
-  project: string
+  readonly project?: string
   version: number
-  tags: string[]
+  tags?: string[]
 }
 
-test('Builder: set/map', t => {
-  const url = 'http://localhost:8080'
-  const project = 'projects'
-  const version = 1
-  const tags = [
-    'typescript',
-    'coding',
-    'language'
-  ]
+interface Request {
+  readonly url: string
+  query?: Query
+}
 
-  const qb = new Builder<Query, 'url' | 'tags' | 'project'>({
+const url = 'http://localhost:8080'
+const project = 'projects'
+const version = 1
+const tags = [
+  'typescript',
+  'coding',
+  'language'
+]
+
+test('Builder: set', t => {
+  const qb = new Builder<Required<Query>>({
+    project,
     version,
-  })
-
-  qb.set('project', project)
-  qb.set('url', url)
-
-  qb.map({
     tags,
   })
 
-  const q1 = qb.build()
+  qb.set('project', project)
+  qb.set('tags', tags)
 
-  const keys = Object.keys(q1) as (keyof Query)[]
+  const q = qb.build()
 
-  t.true(guardFor(q1, ...keys))
-  t.is(url, q1.url)
-  t.is(project, q1.project)
-  t.is(version, q1.version)
-  t.is(tags, q1.tags)
+  t.false('undefined' === typeof q.project)
+  t.is(project, q.project)
+  t.is(version, q.version)
+  t.is(tags, q.tags)
+})
 
-  const q2 = qb.build()
+test('Builder: map', t => {
+  const qb = new Builder<Query, 'project' | 'tags'>({
+    version,
+  })
 
-  t.true(guardFor(q1, ...keys))
-  t.true('undefined' === typeof q2.url)
-  t.true('undefined' === typeof q2.project)
-  t.true('undefined' === typeof q2.version)
-  t.true('undefined' === typeof q2.tags)
+  qb.map({
+    project,
+    tags,
+  })
+
+  const q = qb.build()
+
+  t.true(guardFor(q, ...Object.keys(q) as (keyof Query)[]))
+  t.is(project, q.project)
+  t.is(version, q.version)
+  t.is(tags, q.tags)
+})
+
+test('Builder: undefined', t => {
+  const qb = new Builder<Query, 'project' | 'tags'>()
+
+  const q = qb.build()
+
+  t.true(guardFor(q, ...Object.keys(q) as (keyof Query)[]))
+  t.true('undefined' === typeof q.project)
+  t.true('undefined' === typeof q.version)
+  t.true('undefined' === typeof q.tags)
+})
+
+test('Builder: RequiredOnly', t => {
+  const req = new Builder<RequiredOnly<Request>>()
+
+  req.set('url', url)
+
+  const r = req.build()
+
+  t.is(url, r.url)
+})
+
+test('Builder: RequiredOnly', t => {
+  const qb = new Builder<Query>()
+  const q = qb.build()
+
+  const req = new Builder<OptionalOnly<Request>>()
+
+  req.set('query', q)
+
+  const r = req.build()
+
+  t.is(q, r.query)
 })
