@@ -37,7 +37,7 @@
 import {
   clone,
   guardFor,
-  FoundationTypeError,
+  FoundationError,
 } from '@cosmicverse/foundation'
 
 export type ProxyPlugin<T, P extends keyof T = keyof T, V extends T[P] = T[P]> = { handle(value: V, state: Readonly<T>): boolean | never }
@@ -57,9 +57,9 @@ export type ProxyPropertyHandler<T> = {
 }
 
 /**
- * The `ProxyValidationError`.
+ * The `ProxyError`.
  */
-export class ProxyValidationError extends FoundationTypeError {}
+export class ProxyError extends FoundationError {}
 
 /**
  * The `createProxyHandler` prepares the `ProxyHandler` for
@@ -77,7 +77,7 @@ export function createProxyHandler<T extends object>(target: T, handler: ProxyPr
       if (guardFor(plugins)) {
         for (const plugin of plugins) {
           if (!plugin.handle(value, state)) {
-            throw new ProxyValidationError(`${String(prop)} is invalid`)
+            throw new ProxyError(`${String(prop)} is invalid`)
           }
         }
       }
@@ -103,7 +103,7 @@ export const createProxy = <T extends object>(target: T, handler: ProxyPropertyH
     if (guardFor(plugins)) {
       for (const plugin of plugins) {
         if (!plugin.handle(target[prop], {} as Readonly<T>)) {
-          throw new ProxyValidationError(`${String(prop)} is invalid`)
+          throw new ProxyError(`${String(prop)} is invalid`)
         }
       }
     }

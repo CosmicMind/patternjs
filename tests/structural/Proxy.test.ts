@@ -30,13 +30,14 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import { guardFor } from '@cosmicverse/foundation'
 import test from 'ava'
+
+import { guardFor } from '@cosmicverse/foundation'
 
 import {
   createProxy,
   ProxyPropertyHandler,
-  ProxyValidationError,
+  ProxyError,
 } from '../../src'
 
 interface User {
@@ -125,8 +126,8 @@ test('Proxy: interface initialize validator', t => {
     t.false(true)
   }
   catch (error) {
-    if (error instanceof ProxyValidationError) {
-      t.is(error.name, 'ProxyValidationError')
+    if (error instanceof ProxyError) {
+      t.is(error.name, 'ProxyError')
       t.is(error.message, 'name is invalid')
       t.is(error.toString(), `[${error.name} ${error.message}]`)
     }
@@ -166,7 +167,7 @@ test('Proxy: interface property validator', t => {
       {
         handle(value: string): boolean | never {
           if (2 > value.length) {
-            throw new ProxyValidationError('name is invalid')
+            throw new ProxyError('name is invalid')
           }
           else {
             return true
@@ -183,8 +184,8 @@ test('Proxy: interface property validator', t => {
     t.false(true)
   }
   catch (error) {
-    if (error instanceof ProxyValidationError) {
-      t.is(error.name, 'ProxyValidationError')
+    if (error instanceof ProxyError) {
+      t.is(error.name, 'ProxyError')
       t.is(error.message, 'name is invalid')
       t.is(error.toString(), `[${error.name} ${error.message}]`)
     }
@@ -283,8 +284,8 @@ test('Proxy: class initialize validator', t => {
     t.false(true)
   }
   catch (error) {
-    if (error instanceof ProxyValidationError) {
-      t.is(error.name, 'ProxyValidationError')
+    if (error instanceof ProxyError) {
+      t.is(error.name, 'ProxyError')
       t.is(error.message, 'name is invalid')
       t.is(error.toString(), `[${error.name} ${error.message}]`)
     }
@@ -332,8 +333,8 @@ test('Proxy: class property validator', t => {
     t.false(true)
   }
   catch (error) {
-    if (error instanceof ProxyValidationError) {
-      t.is(error.name, 'ProxyValidationError')
+    if (error instanceof ProxyError) {
+      t.is(error.name, 'ProxyError')
       t.is(error.message, 'name is invalid')
       t.is(error.toString(), `[${error.name} ${error.message}]`)
     }

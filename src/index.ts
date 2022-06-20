@@ -41,12 +41,11 @@ export { Prototype } from './creational/Prototype'
 
 export type {
   ProxyPropertyKey,
-  ProxyPropertyValidator,
   ProxyPropertyHandler,
 } from './structural/Proxy'
 
 export {
-  createProxyHandler,
+  ProxyError,
   createProxy,
-  ProxyValidationError,
+  createProxyHandler,
 } from './structural/Proxy'
