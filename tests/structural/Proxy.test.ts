@@ -30,6 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import { guardFor } from '@cosmicverse/foundation'
 import test from 'ava'
 
 import {
@@ -233,7 +234,7 @@ test('Proxy: class initialize validator', t => {
 
   const target = new Person(id, created, name)
 
-  const handler: ProxyPropertyHandler<User> = {
+  const handler: ProxyPropertyHandler<Person> = {
     id: {
       validate(value: string): boolean {
         return 2 < value.length
@@ -245,7 +246,7 @@ test('Proxy: class initialize validator', t => {
       },
     },
     name: {
-      validate(value: string, state: Person): boolean {
+      validate(value: string): boolean {
         return 2 < value.length
       },
     },
@@ -275,7 +276,7 @@ test('Proxy: class property validator', t => {
 
   const target = new Person(id, created, name)
 
-  const handler: ProxyPropertyHandler<User> = {
+  const handler: ProxyPropertyHandler<Person> = {
     id: {
       validate(value: string): boolean {
         return 2 < value.length
@@ -287,8 +288,8 @@ test('Proxy: class property validator', t => {
       },
     },
     name: {
-      validate(value: string, state: Person): boolean {
-        return 2 < value.length
+      validate(value: string): boolean {
+        return 'undefined' !== typeof value
       },
     },
   }
@@ -362,4 +363,51 @@ test('Proxy: class function', t => {
   t.is(created, proxy.created)
   t.is(name.toUpperCase(), proxy.name)
   t.is(name.toUpperCase(), proxy.displayName)
+})
+
+interface EmailValue {
+  value: string
+}
+
+type Member = User & {
+  readonly email: EmailValue
+}
+
+test('Proxy: nested interface', t => {
+  const id = '123'
+  const created = new Date()
+  const name = 'daniel'
+  const email = createProxy({
+    value: 'my@email.com',
+  }, {
+    value: {
+      validate(value: string, state: Readonly<EmailValue>): boolean {
+        return 5 < value.length && value !== state.value
+      },
+    },
+  })
+
+  const target: Member = {
+    id,
+    created,
+    name,
+    email,
+  }
+
+  const proxy = createProxy(target, {
+    email: {
+      validate(value: EmailValue): boolean {
+        return guardFor(value)
+      },
+    },
+  })
+
+  t.is(email.value, proxy.email.value)
+
+  proxy.email.value = 'address@domain.com'
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.is(name, proxy.name)
+  t.is('address@domain.com', proxy.email.value)
 })
