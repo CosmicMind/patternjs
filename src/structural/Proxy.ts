@@ -48,10 +48,16 @@ import {
 export type ProxyPropertyKey<T> = keyof T extends string | symbol ? keyof T : never
 
 /**
- * The `ProxyPropertyValidator` defined the `Record` types
- * used in validation blocks.
+ * The `ProxyPropertyValidator` defines the necessary the
+ * handler definition for a `ProxyProperty` instance.
  */
-export type ProxyPropertyValidator<T, K extends keyof T = keyof T> = PartialRecord<K, { validate(value: T[K], state: Readonly<T>): boolean }>
+export type ProxyPropertyValidator<T, K extends keyof T = keyof T> = { validate(value: T[K], state: Readonly<T>): boolean }
+
+/**
+ * The `ProxyPropertyHandler` defined the `Record` types
+ * used in handling property events.
+ */
+export type ProxyPropertyHandler<T, K extends keyof T = keyof T> = PartialRecord<K, ProxyPropertyValidator<T>>
 
 /**
  * The `ProxyValidationError`.
@@ -60,9 +66,9 @@ export class ProxyValidationError extends FoundationTypeError {}
 
 /**
  * The `createProxyHandler` prepares the `ProxyHandler` for
- * the given `validator`.
+ * the given `handler`.
  */
-export function createProxyHandler<T extends object>(target: T, validator: ProxyPropertyValidator<T>): ProxyHandler<T> {
+export function createProxyHandler<T extends object>(target: T, handler: ProxyPropertyValidator<T>): ProxyHandler<T> {
   let state = clone(target) as Readonly<T>
 
   return {
@@ -70,7 +76,7 @@ export function createProxyHandler<T extends object>(target: T, validator: Proxy
      * The `set` updates the given property with the given value..
      */
     set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean | never {
-      validateProxyProperty(prop, value, validator, state)
+      validateProxyProperty(prop, value, handler, state)
 
       if (guardFor(target, prop)) {
         state = clone(target) as Readonly<T>
@@ -85,21 +91,21 @@ export function createProxyHandler<T extends object>(target: T, validator: Proxy
 
 /**
  * The `validateProxyProperty` validates the given `value`,
- * against the given `validator` tests.
+ * against the given `handler` tests.
  */
-export function validateProxyProperty<T extends object, P extends keyof T, V extends T[P]>(prop: P, value: V, validator: ProxyPropertyValidator<T>, state: Readonly<T>): void | never {
-  if ('undefined' !== typeof validator[prop] && true !== validator[prop].validate(value, state)) {
+export function validateProxyProperty<T extends object, P extends keyof T, V extends T[P]>(prop: P, value: V, handler: ProxyPropertyHandler<T>, state: Readonly<T>): void | never {
+  if ('undefined' !== typeof handler[prop] && true !== handler[prop].validate(value, state)) {
     throw new ProxyValidationError(`${String(prop)} is invalid`)
   }
 }
 
 /**
  * The `createProxy` creates a new `Proxy` instance with the
- * given `target` and `validator`.
+ * given `target` and `handler`.
  */
-export const createProxy = <T extends object>(target: T, validator: ProxyPropertyValidator<T> = {}): T | never => {
+export const createProxy = <T extends object>(target: T, handler: ProxyPropertyHandler<T> = {}): T | never => {
   for (const prop in target) {
-    validateProxyProperty(prop, target[prop], validator, {} as Readonly<Partial<T>>)
+    validateProxyProperty(prop, target[prop], handler, {} as Readonly<Partial<T>>)
   }
-  return new Proxy(target, createProxyHandler(target, validator))
+  return new Proxy(target, createProxyHandler(target, handler))
 }

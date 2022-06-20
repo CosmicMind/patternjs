@@ -42,6 +42,7 @@ export { Prototype } from './creational/Prototype'
 export type {
   ProxyPropertyKey,
   ProxyPropertyValidator,
+  ProxyPropertyHandler,
 } from './structural/Proxy'
 
 export {

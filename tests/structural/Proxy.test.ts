@@ -34,7 +34,7 @@ import test from 'ava'
 
 import {
   createProxy,
-  ProxyPropertyValidator,
+  ProxyPropertyHandler,
   ProxyValidationError,
 } from '../../src'
 
@@ -94,7 +94,7 @@ test('Proxy: interface initialize validator', t => {
     name: 'E',
   }
 
-  const validator: ProxyPropertyValidator<User> = {
+  const handler: ProxyPropertyHandler<User> = {
     id: {
       validate(value: string): boolean {
         return 2 < value.length
@@ -113,7 +113,7 @@ test('Proxy: interface initialize validator', t => {
   }
 
   try {
-    const proxy = createProxy(target, validator)
+    const proxy = createProxy(target, handler)
     t.is(name, proxy.name)
     t.false(true)
   }
@@ -140,7 +140,7 @@ test('Proxy: interface property validator', t => {
     name: 'jonathan',
   }
 
-  const validator: ProxyPropertyValidator<User> = {
+  const handler: ProxyPropertyHandler<User> = {
     id: {
       validate(value: string): boolean {
         return 2 < value.length
@@ -158,7 +158,7 @@ test('Proxy: interface property validator', t => {
     },
   }
 
-  const proxy = createProxy(target, validator)
+  const proxy = createProxy(target, handler)
 
   try {
     proxy.name = 'E'
@@ -193,7 +193,7 @@ test('Proxy: partial validator', t => {
     name: 'jonathan',
   }
 
-  const validator: ProxyPropertyValidator<User> = {
+  const handler: ProxyPropertyHandler<User> = {
     created: {
       validate(value: Date): boolean {
         return value instanceof Date
@@ -201,7 +201,7 @@ test('Proxy: partial validator', t => {
     },
   }
 
-  const proxy = createProxy(target, validator)
+  const proxy = createProxy(target, handler)
 
   proxy.name = ''
 
@@ -233,7 +233,7 @@ test('Proxy: class initialize validator', t => {
 
   const target = new Person(id, created, name)
 
-  const validator: ProxyPropertyValidator<User> = {
+  const handler: ProxyPropertyHandler<User> = {
     id: {
       validate(value: string): boolean {
         return 2 < value.length
@@ -252,7 +252,7 @@ test('Proxy: class initialize validator', t => {
   }
 
   try {
-    const proxy = createProxy(target, validator)
+    const proxy = createProxy(target, handler)
     t.is(name, proxy.name)
     t.false(true)
   }
@@ -275,7 +275,7 @@ test('Proxy: class property validator', t => {
 
   const target = new Person(id, created, name)
 
-  const validator: ProxyPropertyValidator<User> = {
+  const handler: ProxyPropertyHandler<User> = {
     id: {
       validate(value: string): boolean {
         return 2 < value.length
@@ -293,7 +293,7 @@ test('Proxy: class property validator', t => {
     },
   }
 
-  const proxy = createProxy(target, validator)
+  const proxy = createProxy(target, handler)
 
   try {
     proxy.name = 'E'
