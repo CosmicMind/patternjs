@@ -65,7 +65,7 @@ class Book {
 }
 
 test('Proxy: interface', t => {
-  const id ='123'
+  const id = '123'
   const created = new Date()
   const name = 'daniel'
 
@@ -84,7 +84,7 @@ test('Proxy: interface', t => {
 })
 
 test('Proxy: interface validator', t => {
-  const id ='123'
+  const id = '123'
   const created = new Date()
   const name = 'daniel'
 
@@ -137,7 +137,7 @@ test('Proxy: interface validator', t => {
 })
 
 test('Proxy: partial validator', t => {
-  const id ='123'
+  const id = '123'
   const created = new Date()
   const name = 'daniel'
 
@@ -165,7 +165,7 @@ test('Proxy: partial validator', t => {
 })
 
 test('Proxy: class', t => {
-  const id ='123'
+  const id = '123'
   const created = new Date()
   const name = 'daniel'
 
@@ -181,7 +181,7 @@ test('Proxy: class', t => {
 })
 
 test('Proxy: class validator', t => {
-  const id ='123'
+  const id = '123'
   const created = new Date()
   const name = 'daniel'
 
@@ -231,7 +231,7 @@ test('Proxy: class validator', t => {
 })
 
 test('Proxy: class computed', t => {
-  const id ='123'
+  const id = '123'
   const created = new Date()
   const name = 'daniel'
 
@@ -254,7 +254,7 @@ test('Proxy: class computed', t => {
 })
 
 test('Proxy: class function', t => {
-  const id ='123'
+  const id = '123'
   const created = new Date()
   const name = 'daniel'
 
