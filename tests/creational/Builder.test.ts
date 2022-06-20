@@ -34,8 +34,8 @@ import test from 'ava'
 
 import {
   guardFor,
-  RequiredOnly,
-  OptionalOnly,
+  PickRequired,
+  PickPartial,
 } from '@cosmicverse/foundation'
 
 import { Builder } from '../../src'

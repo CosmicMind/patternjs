@@ -35,6 +35,7 @@ import test from 'ava'
 import {
   createProxy,
   ProxyPropertyValidator,
+  ProxyVirtualHandler,
   ProxyValidationError,
 } from '../../src'
 
@@ -67,7 +68,7 @@ test('Proxy: createProxy', t => {
       },
     },
     name: {
-      validate(value: string): boolean {
+      validate(value: string, state: User): boolean {
         return 2 < value.length
       },
     },
@@ -76,7 +77,7 @@ test('Proxy: createProxy', t => {
   const proxy = createProxy(target, validator)
 
   try {
-    proxy.name = ''
+    proxy.name = 'E'
     t.false(true)
   }
   catch (error) {
@@ -95,4 +96,32 @@ test('Proxy: createProxy', t => {
   t.is(id, proxy.id)
   t.is(created, proxy.created)
   t.is(name, proxy.name)
+})
+
+test('Proxy: partial validator', t => {
+  const id ='123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target: User = {
+    id,
+    created,
+    name: 'jonathan',
+  }
+
+  const validator: ProxyPropertyValidator<User> = {
+    created: {
+      validate(value: Date): boolean {
+        return value instanceof Date
+      },
+    },
+  }
+
+  const proxy = createProxy(target, validator)
+
+  proxy.name = ''
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.not(name, proxy.name)
 })

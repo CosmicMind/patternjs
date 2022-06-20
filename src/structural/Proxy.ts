@@ -35,13 +35,15 @@
  */
 
 import {
+  PartialRecord,
   clone,
+  guardFor,
   FoundationTypeError,
 } from '@cosmicverse/foundation'
 
 export type ProxyPropertyKey<T> = keyof T extends string | symbol ? keyof T : never
 
-export type ProxyPropertyValidator<T> = Record<keyof T, { validate(value: T[keyof T], state: Readonly<T>): boolean }>
+export type ProxyPropertyValidator<T> = PartialRecord<keyof T, { validate(value: T[keyof T], state: Readonly<T>): boolean }>
 
 /**
  * The `ProxyValidationError`.
@@ -49,9 +51,14 @@ export type ProxyPropertyValidator<T> = Record<keyof T, { validate(value: T[keyo
 export class ProxyValidationError extends FoundationTypeError {}
 
 export function createProxyHandler<T extends object>(validator: ProxyPropertyValidator<T>): ProxyHandler<T> {
-  let state = clone({})
+  let state = clone({}) as Readonly<T>
 
   return {
+    construct(target: T): T {
+      state = clone(target) as Readonly<T>
+      return target
+    },
+
     /**
      * The `has` checks whether a value exists in the
      * model definition, or in the instance itself.
@@ -78,11 +85,11 @@ export function createProxyHandler<T extends object>(validator: ProxyPropertyVal
      * and then mutable.
      */
     set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean | never {
-      if (!validator[prop].validate.call(target, value, state as Readonly<T>)) {
+      if (!guardFor(validator) || true !== validator[prop].validate(value, state)) {
         throw new ProxyValidationError(`${String(prop)} is invalid`)
       }
       else {
-        state = clone(target)
+        state = clone(target) as Readonly<T>
         return Reflect.set(target, prop, value)
       }
     },
@@ -104,6 +111,6 @@ export function createProxyTarget<T extends object>(target: T): T {
   }
 }
 
-export function createProxy<T extends object, Q extends ProxyPropertyValidator<T>>(target: T, validator: Q): T {
+export function createProxy<T extends object>(target: T, validator: ProxyPropertyValidator<T>): T {
   return new Proxy(createProxyTarget(target), createProxyHandler(validator))
 }

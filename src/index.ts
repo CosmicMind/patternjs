@@ -42,6 +42,8 @@ export { Prototype } from './creational/Prototype'
 export type {
   ProxyPropertyKey,
   ProxyPropertyValidator,
+  ProxyVirtualFn,
+  ProxyVirtualHandler,
 } from './structural/Proxy'
 
 export {
