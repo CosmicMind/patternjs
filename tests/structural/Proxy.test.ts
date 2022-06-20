@@ -44,7 +44,7 @@ interface User {
   name: string
 }
 
-class Book {
+class Person {
   readonly id: string
   readonly created: Date
   name: string
@@ -83,7 +83,53 @@ test('Proxy: interface', t => {
   t.is(name, proxy.name)
 })
 
-test('Proxy: interface validator', t => {
+test('Proxy: interface initialize validator', t => {
+  const id = '123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target: User = {
+    id,
+    created,
+    name: 'E',
+  }
+
+  const validator: ProxyPropertyValidator<User> = {
+    id: {
+      validate(value: string): boolean {
+        return 2 < value.length
+      },
+    },
+    created: {
+      validate(value: Date): boolean {
+        return value instanceof Date
+      },
+    },
+    name: {
+      validate(value: string): boolean {
+        return 2 < value.length
+      },
+    },
+  }
+
+  try {
+    const proxy = createProxy(target, validator)
+    t.is(name, proxy.name)
+    t.false(true)
+  }
+  catch (error) {
+    if (error instanceof ProxyValidationError) {
+      t.is(error.name, 'ProxyValidationError')
+      t.is(error.message, 'name is invalid')
+      t.is(error.toString(), `[${error.name} ${error.message}]`)
+    }
+    else {
+      t.false(true)
+    }
+  }
+})
+
+test('Proxy: interface property validator', t => {
   const id = '123'
   const created = new Date()
   const name = 'daniel'
@@ -106,7 +152,7 @@ test('Proxy: interface validator', t => {
       },
     },
     name: {
-      validate(value: string, state: User): boolean {
+      validate(value: string): boolean {
         return 2 < value.length
       },
     },
@@ -169,7 +215,7 @@ test('Proxy: class', t => {
   const created = new Date()
   const name = 'daniel'
 
-  const target = new Book(id, created, 'jonathan')
+  const target = new Person(id, created, 'jonathan')
 
   const proxy = createProxy(target)
   proxy.name = 'daniel'
@@ -180,12 +226,12 @@ test('Proxy: class', t => {
   t.is(name, proxy.displayName)
 })
 
-test('Proxy: class validator', t => {
+test('Proxy: class initialize validator', t => {
   const id = '123'
   const created = new Date()
-  const name = 'daniel'
+  const name = 'E'
 
-  const target = new Book(id, created, 'jonathan')
+  const target = new Person(id, created, name)
 
   const validator: ProxyPropertyValidator<User> = {
     id: {
@@ -199,7 +245,49 @@ test('Proxy: class validator', t => {
       },
     },
     name: {
-      validate(value: string, state: User): boolean {
+      validate(value: string, state: Person): boolean {
+        return 2 < value.length
+      },
+    },
+  }
+
+  try {
+    const proxy = createProxy(target, validator)
+    t.is(name, proxy.name)
+    t.false(true)
+  }
+  catch (error) {
+    if (error instanceof ProxyValidationError) {
+      t.is(error.name, 'ProxyValidationError')
+      t.is(error.message, 'name is invalid')
+      t.is(error.toString(), `[${error.name} ${error.message}]`)
+    }
+    else {
+      t.false(true)
+    }
+  }
+})
+
+test('Proxy: class property validator', t => {
+  const id = '123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target = new Person(id, created, name)
+
+  const validator: ProxyPropertyValidator<User> = {
+    id: {
+      validate(value: string): boolean {
+        return 2 < value.length
+      },
+    },
+    created: {
+      validate(value: Date): boolean {
+        return value instanceof Date
+      },
+    },
+    name: {
+      validate(value: string, state: Person): boolean {
         return 2 < value.length
       },
     },
@@ -235,7 +323,7 @@ test('Proxy: class computed', t => {
   const created = new Date()
   const name = 'daniel'
 
-  const target = new Book(id, created, 'jonathan')
+  const target = new Person(id, created, 'jonathan')
 
   const proxy = createProxy(target)
 
@@ -258,7 +346,7 @@ test('Proxy: class function', t => {
   const created = new Date()
   const name = 'daniel'
 
-  const target = new Book(id, created, 'jonathan')
+  const target = new Person(id, created, 'jonathan')
 
   const proxy = createProxy(target)
 
