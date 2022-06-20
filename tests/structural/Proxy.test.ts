@@ -96,21 +96,27 @@ test('Proxy: interface initialize validator', t => {
   }
 
   const handler: ProxyPropertyHandler<User> = {
-    id: {
-      validate(value: string): boolean {
-        return 2 < value.length
-      },
-    },
-    created: {
-      validate(value: Date): boolean {
-        return value instanceof Date
-      },
-    },
-    name: {
-      validate(value: string): boolean {
-        return 2 < value.length
-      },
-    },
+    id: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
+    created: [
+      {
+        handle(value: Date): boolean {
+          return value instanceof Date
+        },
+      }
+    ],
+    name: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
   }
 
   try {
@@ -142,21 +148,27 @@ test('Proxy: interface property validator', t => {
   }
 
   const handler: ProxyPropertyHandler<User> = {
-    id: {
-      validate(value: string): boolean {
-        return 2 < value.length
-      },
-    },
-    created: {
-      validate(value: Date): boolean {
-        return value instanceof Date
-      },
-    },
-    name: {
-      validate(value: string): boolean {
-        return 2 < value.length
-      },
-    },
+    id: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
+    created: [
+      {
+        handle(value: Date): boolean {
+          return value instanceof Date
+        },
+      }
+    ],
+    name: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
   }
 
   const proxy = createProxy(target, handler)
@@ -195,11 +207,13 @@ test('Proxy: partial validator', t => {
   }
 
   const handler: ProxyPropertyHandler<User> = {
-    created: {
-      validate(value: Date): boolean {
-        return value instanceof Date
-      },
-    },
+    created: [
+      {
+        handle(value: Date): boolean {
+          return value instanceof Date
+        },
+      }
+    ],
   }
 
   const proxy = createProxy(target, handler)
@@ -235,21 +249,27 @@ test('Proxy: class initialize validator', t => {
   const target = new Person(id, created, name)
 
   const handler: ProxyPropertyHandler<Person> = {
-    id: {
-      validate(value: string): boolean {
-        return 2 < value.length
-      },
-    },
-    created: {
-      validate(value: Date): boolean {
-        return value instanceof Date
-      },
-    },
-    name: {
-      validate(value: string): boolean {
-        return 2 < value.length
-      },
-    },
+    id: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
+    created: [
+      {
+        handle(value: Date): boolean {
+          return value instanceof Date
+        },
+      }
+    ],
+    name: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
   }
 
   try {
@@ -277,21 +297,27 @@ test('Proxy: class property validator', t => {
   const target = new Person(id, created, name)
 
   const handler: ProxyPropertyHandler<Person> = {
-    id: {
-      validate(value: string): boolean {
-        return 2 < value.length
-      },
-    },
-    created: {
-      validate(value: Date): boolean {
-        return value instanceof Date
-      },
-    },
-    name: {
-      validate(value: string): boolean {
-        return 'undefined' !== typeof value
-      },
-    },
+    id: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
+    created: [
+      {
+        handle(value: Date): boolean {
+          return value instanceof Date
+        },
+      }
+    ],
+    name: [
+      {
+        handle(value: string): boolean {
+          return 2 < value.length
+        },
+      }
+    ],
   }
 
   const proxy = createProxy(target, handler)
@@ -380,11 +406,13 @@ test('Proxy: nested interface', t => {
   const email = createProxy({
     value: 'my@email.com',
   }, {
-    value: {
-      validate(value: string, state: Readonly<EmailValue>): boolean {
-        return 5 < value.length && value !== state.value
-      },
-    },
+    value: [
+      {
+        handle(value: string, state: Readonly<EmailValue>): boolean {
+          return 5 < value.length && value !== state.value
+        },
+      }
+    ],
   })
 
   const target: Member = {
@@ -395,11 +423,13 @@ test('Proxy: nested interface', t => {
   }
 
   const proxy = createProxy(target, {
-    email: {
-      validate(value: EmailValue): boolean {
-        return guardFor(value)
-      },
-    },
+    email: [
+      {
+        handle(value: EmailValue): boolean {
+          return guardFor(value)
+        },
+      }
+    ],
   })
 
   t.is(email.value, proxy.email.value)
