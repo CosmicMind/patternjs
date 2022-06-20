@@ -41,8 +41,16 @@ import {
   FoundationTypeError,
 } from '@cosmicverse/foundation'
 
+/**
+ * The `ProxyPropertyKey` defines the allowable keys for
+ * a given type `T`.
+ */
 export type ProxyPropertyKey<T> = keyof T extends string | symbol ? keyof T : never
 
+/**
+ * The `ProxyPropertyValidator` defined the `Record` types
+ * used in validation blocks.
+ */
 export type ProxyPropertyValidator<T> = PartialRecord<keyof T, { validate(value: T[keyof T], state: Readonly<T>): boolean }>
 
 /**
@@ -50,42 +58,19 @@ export type ProxyPropertyValidator<T> = PartialRecord<keyof T, { validate(value:
  */
 export class ProxyValidationError extends FoundationTypeError {}
 
+/**
+ * The `createProxyHandler` prepares the `ProxyHandler` for
+ * the given `validator`.
+ */
 export function createProxyHandler<T extends object>(validator: ProxyPropertyValidator<T>): ProxyHandler<T> {
   let state = clone({}) as Readonly<T>
 
   return {
-    construct(target: T): T {
-      state = clone(target) as Readonly<T>
-      return target
-    },
-
     /**
-     * The `has` checks whether a value exists in the
-     * model definition, or in the instance itself.
-     * The search is ordered as: immutable, mutable, virtual,
-     * and then instance.
-     */
-    has<P extends ProxyPropertyKey<T>>(target: T, prop: P): boolean {
-      return Reflect.has(target, prop)
-    },
-
-    /**
-     * The `get` fetches the property value for the give property
-     * key. The search is ordered as: immutable, mutable, virtual,
-     * and then instance.
-     */
-    get<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P): V {
-      return Reflect.get(target, prop)
-    },
-
-    /**
-     * The `set` updates the given property with the given value.
-     * The property key and value are checked against the
-     * `ProxySchema`. The search is ordered as: immutable, virtual,
-     * and then mutable.
+     * The `set` updates the given property with the given value..
      */
     set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean | never {
-      if (!guardFor(validator) || true !== validator[prop].validate(value, state)) {
+      if (!guardFor(validator) || 'undefined' !== typeof validator[prop] && true !== validator[prop].validate(value, state)) {
         throw new ProxyValidationError(`${String(prop)} is invalid`)
       }
       else {
@@ -93,24 +78,12 @@ export function createProxyHandler<T extends object>(validator: ProxyPropertyVal
         return Reflect.set(target, prop, value)
       }
     },
-
-    /**
-     * The `deleteProperty` deletes the given property so long as
-     * the property is not defined in the `ProxySchema`. The
-     * search is ordered as: immutable, mutable, and then virtual.
-     */
-    deleteProperty<P extends ProxyPropertyKey<T>>(target: T, prop: P): boolean {
-      return Reflect.deleteProperty(target, prop)
-    },
   }
 }
 
-export function createProxyTarget<T extends object>(target: T): T {
-  return {
-    ...target,
-  }
-}
-
-export function createProxy<T extends object>(target: T, validator: ProxyPropertyValidator<T>): T {
-  return new Proxy(createProxyTarget(target), createProxyHandler(validator))
-}
+/**
+ * The `createProxy` creates a new `Proxy` instance with the
+ * given `target` and `validator`.
+ */
+export const createProxy = <T extends object>(target: T, validator: ProxyPropertyValidator<T> = {}): T =>
+  new Proxy(target, createProxyHandler(validator))

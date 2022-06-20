@@ -35,7 +35,6 @@ import test from 'ava'
 import {
   createProxy,
   ProxyPropertyValidator,
-  ProxyVirtualHandler,
   ProxyValidationError,
 } from '../../src'
 
@@ -45,7 +44,46 @@ interface User {
   name: string
 }
 
-test('Proxy: createProxy', t => {
+class Book {
+  readonly id: string
+  readonly created: Date
+  name: string
+
+  get displayName(): string {
+    return this.name
+  }
+
+  constructor(id: string, created: Date, name: string) {
+    this.id = id
+    this.created = created
+    this.name = name
+  }
+
+  makeNameUpperCase(): void {
+    this.name = this.name.toUpperCase()
+  }
+}
+
+test('Proxy: interface', t => {
+  const id ='123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target: User = {
+    id,
+    created,
+    name: 'jonathan',
+  }
+
+  const proxy = createProxy(target)
+  proxy.name = 'daniel'
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.is(name, proxy.name)
+})
+
+test('Proxy: interface validator', t => {
   const id ='123'
   const created = new Date()
   const name = 'daniel'
@@ -124,4 +162,116 @@ test('Proxy: partial validator', t => {
   t.is(id, proxy.id)
   t.is(created, proxy.created)
   t.not(name, proxy.name)
+})
+
+test('Proxy: class', t => {
+  const id ='123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target = new Book(id, created, 'jonathan')
+
+  const proxy = createProxy(target)
+  proxy.name = 'daniel'
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.is(name, proxy.name)
+  t.is(name, proxy.displayName)
+})
+
+test('Proxy: class validator', t => {
+  const id ='123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target = new Book(id, created, 'jonathan')
+
+  const validator: ProxyPropertyValidator<User> = {
+    id: {
+      validate(value: string): boolean {
+        return 2 < value.length
+      },
+    },
+    created: {
+      validate(value: Date): boolean {
+        return value instanceof Date
+      },
+    },
+    name: {
+      validate(value: string, state: User): boolean {
+        return 2 < value.length
+      },
+    },
+  }
+
+  const proxy = createProxy(target, validator)
+
+  try {
+    proxy.name = 'E'
+    t.false(true)
+  }
+  catch (error) {
+    if (error instanceof ProxyValidationError) {
+      t.is(error.name, 'ProxyValidationError')
+      t.is(error.message, 'name is invalid')
+      t.is(error.toString(), `[${error.name} ${error.message}]`)
+    }
+    else {
+      t.false(true)
+    }
+  }
+
+  proxy.name = 'daniel'
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.is(name, proxy.name)
+  t.is(name, proxy.displayName)
+})
+
+test('Proxy: class computed', t => {
+  const id ='123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target = new Book(id, created, 'jonathan')
+
+  const proxy = createProxy(target)
+
+  t.is('jonathan', proxy.displayName)
+
+  proxy.name = 'daniel'
+
+  t.is(name, proxy.displayName)
+
+  proxy.name = 'daniel'
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.is(name, proxy.name)
+  t.is(name, proxy.displayName)
+})
+
+test('Proxy: class function', t => {
+  const id ='123'
+  const created = new Date()
+  const name = 'daniel'
+
+  const target = new Book(id, created, 'jonathan')
+
+  const proxy = createProxy(target)
+
+  t.is('jonathan', proxy.displayName)
+
+  proxy.name = 'daniel'
+
+  t.is(name, proxy.displayName)
+
+  proxy.makeNameUpperCase()
+
+  t.is(id, proxy.id)
+  t.is(created, proxy.created)
+  t.is(name.toUpperCase(), proxy.name)
+  t.is(name.toUpperCase(), proxy.displayName)
 })
