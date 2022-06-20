@@ -164,8 +164,13 @@ test('Proxy: interface property validator', t => {
     ],
     name: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
+        handle(value: string): boolean | never {
+          if (2 > value.length) {
+            throw new ProxyValidationError('name is invalid')
+          }
+          else {
+            return true
+          }
         },
       }
     ],
