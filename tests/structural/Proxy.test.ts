@@ -36,8 +36,8 @@ import { guardFor } from '@cosmicverse/foundation'
 
 import {
   createProxy,
-  ProxyPropertyHandler,
   ProxyError,
+  ProxyPropertyHandler,
 } from '../../src'
 
 interface User {
@@ -99,23 +99,17 @@ test('Proxy: interface initialize validator', t => {
   const handler: ProxyPropertyHandler<User> = {
     id: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
-        },
+        validate: (value: string): boolean => 2 < value.length,
       }
     ],
     created: [
       {
-        handle(value: Date): boolean {
-          return value instanceof Date
-        },
+        validate: (value: Date): boolean => value instanceof Date,
       }
     ],
     name: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
-        },
+        validate: (value: string): boolean => 2 < value.length,
       }
     ],
   }
@@ -151,21 +145,17 @@ test('Proxy: interface property validator', t => {
   const handler: ProxyPropertyHandler<User> = {
     id: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
-        },
+        validate: (value: string): boolean => 2 < value.length,
       }
     ],
     created: [
       {
-        handle(value: Date): boolean {
-          return value instanceof Date
-        },
+        validate: (value: Date): boolean => value instanceof Date,
       }
     ],
     name: [
       {
-        handle(value: string): boolean | never {
+        validate(value: string): boolean | never {
           if (2 > value.length) {
             throw new ProxyError('name is invalid')
           }
@@ -215,9 +205,7 @@ test('Proxy: partial validator', t => {
   const handler: ProxyPropertyHandler<User> = {
     created: [
       {
-        handle(value: Date): boolean {
-          return value instanceof Date
-        },
+        validate: (value: Date): boolean => value instanceof Date,
       }
     ],
   }
@@ -257,23 +245,17 @@ test('Proxy: class initialize validator', t => {
   const handler: ProxyPropertyHandler<Person> = {
     id: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
-        },
+        validate: (value: string): boolean => 2 < value.length,
       }
     ],
     created: [
       {
-        handle(value: Date): boolean {
-          return value instanceof Date
-        },
+        validate: (value: Date): boolean => value instanceof Date,
       }
     ],
     name: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
-        },
+        validate: (value: string): boolean => 2 < value.length,
       }
     ],
   }
@@ -305,23 +287,17 @@ test('Proxy: class property validator', t => {
   const handler: ProxyPropertyHandler<Person> = {
     id: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
-        },
+        validate: (value: string): boolean => 2 < value.length,
       }
     ],
     created: [
       {
-        handle(value: Date): boolean {
-          return value instanceof Date
-        },
+        validate: (value: Date): boolean => value instanceof Date,
       }
     ],
     name: [
       {
-        handle(value: string): boolean {
-          return 2 < value.length
-        },
+        validate: (value: string): boolean => 2 < value.length,
       }
     ],
   }
@@ -414,7 +390,7 @@ test('Proxy: nested interface', t => {
   }, {
     value: [
       {
-        handle(value: string, state: Readonly<EmailValue>): boolean {
+        validate(value: string, state: Readonly<EmailValue>): boolean {
           return 5 < value.length && value !== state.value
         },
       }
@@ -431,7 +407,7 @@ test('Proxy: nested interface', t => {
   const proxy = createProxy(target, {
     email: [
       {
-        handle(value: EmailValue): boolean {
+        validate(value: EmailValue): boolean {
           return guardFor(value)
         },
       }

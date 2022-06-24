@@ -40,7 +40,11 @@ import {
   FoundationError,
 } from '@cosmicverse/foundation'
 
-export type ProxyPlugin<T, P extends keyof T = keyof T, V extends T[P] = T[P]> = { handle(value: V, state: Readonly<T>): boolean | never }
+export type ProxyPlugin<T, P extends keyof T = keyof T, V extends T[P] = T[P]> = {
+  trace?(target: Readonly<T>): void,
+  validate?(value: V, state: Readonly<T>): boolean | never,
+  update?(newValue: V, oldValue: V, state: Readonly<T>): void,
+}
 
 /**
  * The `ProxyPropertyKey` defines the allowable keys for
@@ -74,17 +78,31 @@ export function createProxyHandler<T extends object>(target: T, handler: ProxyPr
      */
     set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean | never {
       const plugins = handler[prop]
+
       if (guardFor(plugins)) {
         for (const plugin of plugins) {
-          if (!plugin.handle(value, state)) {
+          if (!plugin.validate?.(value, state)) {
             throw new ProxyError(`${String(prop)} is invalid`)
           }
         }
       }
 
       if (guardFor(target, prop)) {
-        state = clone(target) as Readonly<T>
-        return Reflect.set(target, prop, value)
+        const oldValue = target[prop]
+
+        try {
+          return Reflect.set(target, prop, value)
+        }
+        finally {
+          state = clone(target) as Readonly<T>
+
+          if (guardFor(plugins)) {
+            for (const plugin of plugins) {
+              plugin.update?.(value, oldValue, state)
+              plugin.trace?.(state)
+            }
+          }
+        }
       }
       else {
         return false
@@ -102,9 +120,10 @@ export const createProxy = <T extends object>(target: T, handler: ProxyPropertyH
     const plugins = handler[prop]
     if (guardFor(plugins)) {
       for (const plugin of plugins) {
-        if (!plugin.handle(target[prop], {} as Readonly<T>)) {
+        if (!plugin.validate?.(target[prop], {} as Readonly<T>)) {
           throw new ProxyError(`${String(prop)} is invalid`)
         }
+        plugin.trace?.(clone(target) as Readonly<T>)
       }
     }
   }

@@ -38,6 +38,6 @@
  * A `Identifiable` structure is capable of being identified by a
  * particular id value.
  */
-export interface Identifiable<T extends number | string> {
+export interface Identifiable<T extends string | number | symbol> {
   id: T
 }
