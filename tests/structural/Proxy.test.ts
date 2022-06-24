@@ -37,7 +37,7 @@ import { guardFor } from '@cosmicverse/foundation'
 import {
   createProxy,
   ProxyError,
-  ProxyPropertyHandler,
+  ProxyTargetLifecycleHandlers,
 } from '../../src'
 
 interface User {
@@ -80,9 +80,9 @@ test('Proxy: interface', t => {
   const proxy = createProxy(target)
   proxy.name = 'daniel'
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
-  t.is(name, proxy.name)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
+  t.is(proxy.name, name)
 })
 
 test('Proxy: interface initialize validator', t => {
@@ -96,27 +96,23 @@ test('Proxy: interface initialize validator', t => {
     name: 'E',
   }
 
-  const handler: ProxyPropertyHandler<User> = {
-    id: [
-      {
+  const handler: ProxyTargetLifecycleHandlers<User> = {
+    properties: {
+      id: {
         validate: (value: string): boolean => 2 < value.length,
-      }
-    ],
-    created: [
-      {
+      },
+      created: {
         validate: (value: Date): boolean => value instanceof Date,
-      }
-    ],
-    name: [
-      {
+      },
+      name: {
         validate: (value: string): boolean => 2 < value.length,
-      }
-    ],
+      },
+    },
   }
 
   try {
     const proxy = createProxy(target, handler)
-    t.is(name, proxy.name)
+    t.is(proxy.name, name)
     t.false(true)
   }
   catch (error) {
@@ -142,29 +138,18 @@ test('Proxy: interface property validator', t => {
     name: 'jonathan',
   }
 
-  const handler: ProxyPropertyHandler<User> = {
-    id: [
-      {
+  const handler: ProxyTargetLifecycleHandlers<User> = {
+    properties: {
+      id: {
         validate: (value: string): boolean => 2 < value.length,
-      }
-    ],
-    created: [
-      {
+      },
+      created: {
         validate: (value: Date): boolean => value instanceof Date,
-      }
-    ],
-    name: [
-      {
-        validate(value: string): boolean | never {
-          if (2 > value.length) {
-            throw new ProxyError('name is invalid')
-          }
-          else {
-            return true
-          }
-        },
-      }
-    ],
+      },
+      name: {
+        validate: (value: string): boolean => 2 < value.length,
+      },
+    },
   }
 
   const proxy = createProxy(target, handler)
@@ -186,9 +171,9 @@ test('Proxy: interface property validator', t => {
 
   proxy.name = 'daniel'
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
-  t.is(name, proxy.name)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
+  t.is(proxy.name, name)
 })
 
 test('Proxy: partial validator', t => {
@@ -202,20 +187,20 @@ test('Proxy: partial validator', t => {
     name: 'jonathan',
   }
 
-  const handler: ProxyPropertyHandler<User> = {
-    created: [
-      {
+  const handler: ProxyTargetLifecycleHandlers<User> = {
+    properties: {
+      created: {
         validate: (value: Date): boolean => value instanceof Date,
-      }
-    ],
+      },
+    },
   }
 
   const proxy = createProxy(target, handler)
 
   proxy.name = ''
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
   t.not(name, proxy.name)
 })
 
@@ -229,10 +214,10 @@ test('Proxy: class', t => {
   const proxy = createProxy(target)
   proxy.name = 'daniel'
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
-  t.is(name, proxy.name)
-  t.is(name, proxy.displayName)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
+  t.is(proxy.name, name)
+  t.is(proxy.displayName, name)
 })
 
 test('Proxy: class initialize validator', t => {
@@ -242,27 +227,23 @@ test('Proxy: class initialize validator', t => {
 
   const target = new Person(id, created, name)
 
-  const handler: ProxyPropertyHandler<Person> = {
-    id: [
-      {
+  const handler: ProxyTargetLifecycleHandlers<Person> = {
+    properties: {
+      id: {
         validate: (value: string): boolean => 2 < value.length,
-      }
-    ],
-    created: [
-      {
+      },
+      created: {
         validate: (value: Date): boolean => value instanceof Date,
-      }
-    ],
-    name: [
-      {
+      },
+      name: {
         validate: (value: string): boolean => 2 < value.length,
-      }
-    ],
+      },
+    },
   }
 
   try {
     const proxy = createProxy(target, handler)
-    t.is(name, proxy.name)
+    t.is(proxy.name, name)
     t.false(true)
   }
   catch (error) {
@@ -284,22 +265,18 @@ test('Proxy: class property validator', t => {
 
   const target = new Person(id, created, name)
 
-  const handler: ProxyPropertyHandler<Person> = {
-    id: [
-      {
+  const handler: ProxyTargetLifecycleHandlers<Person> = {
+    properties: {
+      id: {
         validate: (value: string): boolean => 2 < value.length,
-      }
-    ],
-    created: [
-      {
+      },
+      created: {
         validate: (value: Date): boolean => value instanceof Date,
-      }
-    ],
-    name: [
-      {
+      },
+      name: {
         validate: (value: string): boolean => 2 < value.length,
-      }
-    ],
+      },
+    },
   }
 
   const proxy = createProxy(target, handler)
@@ -321,10 +298,10 @@ test('Proxy: class property validator', t => {
 
   proxy.name = 'daniel'
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
-  t.is(name, proxy.name)
-  t.is(name, proxy.displayName)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
+  t.is(proxy.name, name)
+  t.is(proxy.displayName, name)
 })
 
 test('Proxy: class computed', t => {
@@ -340,14 +317,14 @@ test('Proxy: class computed', t => {
 
   proxy.name = 'daniel'
 
-  t.is(name, proxy.displayName)
+  t.is(proxy.displayName, name)
 
   proxy.name = 'daniel'
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
-  t.is(name, proxy.name)
-  t.is(name, proxy.displayName)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
+  t.is(proxy.name, name)
+  t.is(proxy.displayName, name)
 })
 
 test('Proxy: class function', t => {
@@ -363,14 +340,14 @@ test('Proxy: class function', t => {
 
   proxy.name = 'daniel'
 
-  t.is(name, proxy.displayName)
+  t.is(proxy.displayName, name)
 
   proxy.makeNameUpperCase()
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
-  t.is(name.toUpperCase(), proxy.name)
-  t.is(name.toUpperCase(), proxy.displayName)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
+  t.is(proxy.name, name.toUpperCase())
+  t.is(proxy.displayName, name.toUpperCase())
 })
 
 interface EmailValue {
@@ -388,13 +365,13 @@ test('Proxy: nested interface', t => {
   const email = createProxy({
     value: 'my@email.com',
   }, {
-    value: [
-      {
+    properties: {
+      value: {
         validate(value: string, state: Readonly<EmailValue>): boolean {
           return 5 < value.length && value !== state.value
         },
-      }
-    ],
+      },
+    },
   })
 
   const target: Member = {
@@ -405,21 +382,21 @@ test('Proxy: nested interface', t => {
   }
 
   const proxy = createProxy(target, {
-    email: [
-      {
+    properties: {
+      email: {
         validate(value: EmailValue): boolean {
           return guardFor(value)
         },
-      }
-    ],
+      },
+    },
   })
 
   t.is(email.value, proxy.email.value)
 
   proxy.email.value = 'address@domain.com'
 
-  t.is(id, proxy.id)
-  t.is(created, proxy.created)
-  t.is(name, proxy.name)
+  t.is(proxy.id, id)
+  t.is(proxy.created, created)
+  t.is(proxy.name, name)
   t.is('address@domain.com', proxy.email.value)
 })

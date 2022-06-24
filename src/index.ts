@@ -30,8 +30,6 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Attributable } from './protocols/Attributable'
-
 export type { Identifiable } from './interfaces/Identifiable'
 export type { Nameable } from './interfaces/Nameable'
 export type { Serializable } from './interfaces/Serializable'
@@ -42,8 +40,10 @@ export { Builder } from './creational/Builder'
 export { Prototype } from './creational/Prototype'
 
 export type {
+  ProxyTargetLifecycleHandlers,
   ProxyPropertyKey,
-  ProxyPropertyHandler,
+  ProxyPropertyLifecycleHandlers,
+  ProxyPropertyLifecycleHandlersMap,
 } from './structural/Proxy'
 
 export {

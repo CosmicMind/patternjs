@@ -40,24 +40,31 @@ import {
   FoundationError,
 } from '@cosmicverse/foundation'
 
-export type ProxyPlugin<T, P extends keyof T = keyof T, V extends T[P] = T[P]> = {
-  trace?(target: Readonly<T>): void,
-  validate?(value: V, state: Readonly<T>): boolean | never,
-  update?(newValue: V, oldValue: V, state: Readonly<T>): void,
-}
-
 /**
  * The `ProxyPropertyKey` defines the allowable keys for
  * a given type `T`.
  */
 export type ProxyPropertyKey<T> = keyof T extends string | symbol ? keyof T : never
 
+export type ProxyPropertyLifecycleHandlers<T, V> = {
+  validate?(value: V, state: Readonly<T>): boolean | never,
+  updated?(newValue: V, oldValue: V, state: Readonly<T>): void,
+  deleted?(value: V, state: Readonly<T>): void,
+}
+
 /**
- * The `ProxyPropertyHandler` defined the `Record` types
+ * The `ProxyPropertyLifecycleHandlersMap` defined the `Record` types
  * used in handling property events.
  */
-export type ProxyPropertyHandler<T> = {
-  [P in keyof T]?: ProxyPlugin<T, P, T[P]>[]
+export type ProxyPropertyLifecycleHandlersMap<T> = {
+  [P in keyof T]?: ProxyPropertyLifecycleHandlers<T, T[P]>
+}
+
+export type ProxyTargetLifecycleHandlers<T> = {
+  trace?(target: Readonly<T>): void,
+  created?(target: Readonly<T>): void,
+  updated?(newTarget: T, oldTarget: T): void,
+  properties?: ProxyPropertyLifecycleHandlersMap<T>
 }
 
 /**
@@ -66,10 +73,10 @@ export type ProxyPropertyHandler<T> = {
 export class ProxyError extends FoundationError {}
 
 /**
- * The `createProxyHandler` prepares the `ProxyHandler` for
+ * The `createProxyHandler` prepares the `ProxyTargetLifecycleHandlers` for
  * the given `handler`.
  */
-export function createProxyHandler<T extends object>(target: T, handler: ProxyPropertyHandler<T>): ProxyHandler<T> {
+export function createProxyHandler<T extends object>(target: T, handler: ProxyTargetLifecycleHandlers<T>): ProxyHandler<T> {
   let state = clone(target) as Readonly<T>
 
   return {
@@ -77,18 +84,17 @@ export function createProxyHandler<T extends object>(target: T, handler: ProxyPr
      * The `set` updates the given property with the given value..
      */
     set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean | never {
-      const plugins = handler[prop]
+      const handlers = handler.properties?.[prop]
 
-      if (guardFor(plugins)) {
-        for (const plugin of plugins) {
-          if (!plugin.validate?.(value, state)) {
-            throw new ProxyError(`${String(prop)} is invalid`)
-          }
+      if (guardFor(handlers)) {
+        if (!handlers.validate?.(value, state)) {
+          throw new ProxyError(`${String(prop)} is invalid`)
         }
       }
 
       if (guardFor(target, prop)) {
         const oldValue = target[prop]
+        const oldTarget = state
 
         try {
           return Reflect.set(target, prop, value)
@@ -96,11 +102,13 @@ export function createProxyHandler<T extends object>(target: T, handler: ProxyPr
         finally {
           state = clone(target) as Readonly<T>
 
-          if (guardFor(plugins)) {
-            for (const plugin of plugins) {
-              plugin.update?.(value, oldValue, state)
-              plugin.trace?.(state)
-            }
+          if (guardFor(handlers)) {
+            handlers.updated?.(value, oldValue, state)
+          }
+
+          if ('undefined' !== typeof oldTarget) {
+            handler.updated?.(state, oldTarget)
+            handler.trace?.(state)
           }
         }
       }
@@ -115,17 +123,22 @@ export function createProxyHandler<T extends object>(target: T, handler: ProxyPr
  * The `createProxy` creates a new `Proxy` instance with the
  * given `target` and `handler`.
  */
-export const createProxy = <T extends object>(target: T, handler: ProxyPropertyHandler<T> = {}): T | never => {
-  for (const prop in handler) {
-    const plugins = handler[prop]
-    if (guardFor(plugins)) {
-      for (const plugin of plugins) {
-        if (!plugin.validate?.(target[prop], {} as Readonly<T>)) {
+export const createProxy = <T extends object>(target: T, handler: ProxyTargetLifecycleHandlers<T> = {}): T | never => {
+  if (guardFor(target)) {
+    const properties = handler.properties
+
+    if (guardFor(properties)) {
+      for (const prop in properties) {
+        if (!properties[prop]?.validate?.(target[prop], {} as Readonly<T>)) {
           throw new ProxyError(`${String(prop)} is invalid`)
         }
-        plugin.trace?.(clone(target) as Readonly<T>)
       }
     }
+
+    const state = clone(target) as Readonly<T>
+    handler.created?.(state)
+    handler.trace?.(state)
   }
+
   return new Proxy(target, createProxyHandler(target, handler))
 }
