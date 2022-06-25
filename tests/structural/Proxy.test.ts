@@ -37,7 +37,7 @@ import { guardFor } from '@cosmicverse/foundation'
 import {
   createProxy,
   ProxyError,
-  ProxyTargetLifecycleHandlers,
+  ProxyTargetLifecycleHandler,
 } from '../../src'
 
 interface User {
@@ -96,7 +96,7 @@ test('Proxy: interface initialize validator', t => {
     name: 'E',
   }
 
-  const handler: ProxyTargetLifecycleHandlers<User> = {
+  const handler: ProxyTargetLifecycleHandler<User> = {
     properties: {
       id: {
         validate: (value: string): boolean => 2 < value.length,
@@ -138,7 +138,7 @@ test('Proxy: interface property validator', t => {
     name: 'jonathan',
   }
 
-  const handler: ProxyTargetLifecycleHandlers<User> = {
+  const handler: ProxyTargetLifecycleHandler<User> = {
     properties: {
       id: {
         validate: (value: string): boolean => 2 < value.length,
@@ -187,7 +187,7 @@ test('Proxy: partial validator', t => {
     name: 'jonathan',
   }
 
-  const handler: ProxyTargetLifecycleHandlers<User> = {
+  const handler: ProxyTargetLifecycleHandler<User> = {
     properties: {
       created: {
         validate: (value: Date): boolean => value instanceof Date,
@@ -227,7 +227,7 @@ test('Proxy: class initialize validator', t => {
 
   const target = new Person(id, created, name)
 
-  const handler: ProxyTargetLifecycleHandlers<Person> = {
+  const handler: ProxyTargetLifecycleHandler<Person> = {
     properties: {
       id: {
         validate: (value: string): boolean => 2 < value.length,
@@ -265,7 +265,7 @@ test('Proxy: class property validator', t => {
 
   const target = new Person(id, created, name)
 
-  const handler: ProxyTargetLifecycleHandlers<Person> = {
+  const handler: ProxyTargetLifecycleHandler<Person> = {
     properties: {
       id: {
         validate: (value: string): boolean => 2 < value.length,

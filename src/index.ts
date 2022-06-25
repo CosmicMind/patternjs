@@ -40,10 +40,10 @@ export { Builder } from './creational/Builder'
 export { Prototype } from './creational/Prototype'
 
 export type {
-  ProxyTargetLifecycleHandlers,
+  ProxyTargetLifecycleHandler,
   ProxyPropertyKey,
-  ProxyPropertyLifecycleHandlers,
-  ProxyPropertyLifecycleHandlersMap,
+  ProxyPropertyLifecycleHandler,
+  ProxyPropertyLifecycleHandlerMap,
 } from './structural/Proxy'
 
 export {
