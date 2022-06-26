@@ -38,3 +38,10 @@ export type { Versionable } from './interfaces/Versionable'
 
 export { Builder } from './creational/Builder'
 export { Prototype } from './creational/Prototype'
+
+export type {
+  ObservableFn,
+  ObservableTopics,
+} from './structural/Observable'
+
+export { Observable } from './structural/Observable'
