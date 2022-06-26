@@ -38,16 +38,3 @@ export type { Versionable } from './interfaces/Versionable'
 
 export { Builder } from './creational/Builder'
 export { Prototype } from './creational/Prototype'
-
-export type {
-  ProxyTargetLifecycleHandler,
-  ProxyPropertyKey,
-  ProxyPropertyLifecycleHandler,
-  ProxyPropertyLifecycleHandlerMap,
-} from './structural/Proxy'
-
-export {
-  ProxyError,
-  createProxy,
-  createProxyHandler,
-} from './structural/Proxy'

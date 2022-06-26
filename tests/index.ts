@@ -32,4 +32,3 @@
 
 export * from './creational/Builder.test'
 export * from './creational/Prototype.test'
-export * from './structural/Proxy.test'
