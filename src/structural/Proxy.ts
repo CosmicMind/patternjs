@@ -78,10 +78,10 @@ export class ProxyError extends FoundationError {}
  */
 export function createProxyHandler<T extends object>(target: T, handler: ProxyTargetLifecycleHandler<T>): ProxyHandler<T> {
   let state = clone(target) as Readonly<T>
-  console.log('HANDLER', handler)
+
   return {
     /**
-     * The `set` updates the given property with the given value..
+     * The `set` updates the given property with the given value.
      */
     set<P extends ProxyPropertyKey<T>, V extends T[P]>(target: T, prop: P, value: V): boolean | never {
       const h = handler.properties?.[prop]
@@ -100,7 +100,7 @@ export function createProxyHandler<T extends object>(target: T, handler: ProxyTa
         state = clone(target) as Readonly<T>
 
         h?.updated?.(value, oldValue, state)
-        console.log('HHH', handler)
+
         handler.updated?.(state, oldTarget)
         handler.trace?.(state)
 
