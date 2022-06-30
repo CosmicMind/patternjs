@@ -49,14 +49,14 @@ export interface Buildable<T> {
  * A `Builder`
  */
 export class Builder<T, K extends keyof T = keyof T> implements Buildable<T> {
-  #model: T
+  #props: T
 
   constructor(props: T) {
-    this.#model = props
+    this.#props = props
   }
 
   set<P extends K, V extends T[P]>(prop: P, value: V): this {
-    Object.defineProperty(this.#model, prop, {
+    Object.defineProperty(this.#props, prop, {
       configurable: true,
       enumerable: true,
       writable: false,
@@ -73,12 +73,12 @@ export class Builder<T, K extends keyof T = keyof T> implements Buildable<T> {
   }
 
   build(): Readonly<T> {
-    const instance = this.#model
+    const instance = this.#props
     this.#clear()
     return instance as T
   }
 
   #clear(): void {
-    this.#model = {} as T
+    this.#props = {} as T
   }
 }

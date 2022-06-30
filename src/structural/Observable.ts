@@ -39,7 +39,7 @@ import {
   guardFor,
 } from '@cosmicverse/foundation'
 
-export type ObservableFn<T> = (event: T) => void
+export type ObservableFn<T> = (message: T) => void
 
 export type ObservableTopics = {
   readonly [K: string]: unknown
@@ -67,10 +67,10 @@ export abstract class Observable<T extends ObservableTopics> {
   }
 
   once<K extends keyof T>(topic: K, ...fn: ObservableFn<T[K]>[]): void {
-    const cb = (event: T[K]): void => {
+    const cb = (message: T[K]): void => {
       this.unsubscribe(topic, cb)
       for (const cb of fn) {
-        cb(event)
+        cb(message)
       }
     }
     this.subscribe(topic, cb)
@@ -87,23 +87,23 @@ export abstract class Observable<T extends ObservableTopics> {
     }
   }
 
-  protected publish<K extends keyof T>(topic: K, event: T[K]): Promise<T[K]> {
+  protected publish<K extends keyof T>(topic: K, message: T[K]): Promise<T[K]> {
     return async((): T[K] | never => {
       const topics = this.#topics[topic]
       if (guardFor(topics)) {
         for (const f of topics) {
-          f(event)
+          f(message)
         }
       }
-      return event
+      return message
     })
   }
 
-  protected publishSync<K extends keyof T>(topic: K, event: T[K]): void {
+  protected publishSync<K extends keyof T>(topic: K, message: T[K]): void {
     const topics = this.#topics[topic]
     if (guardFor(topics)) {
       for (const f of topics) {
-        f(event)
+        f(message)
       }
     }
   }
