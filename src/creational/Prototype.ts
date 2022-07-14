@@ -1,7 +1,7 @@
 /**
  * BSD 3-Clause License
  *
- * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicverse dot org>
+ * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicmind dot org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -34,7 +34,7 @@
  * @module Prototype
  */
 
-import { assign } from '@cosmicverse/foundation'
+import { assign } from '@cosmicmind/foundation'
 
 /**
  * A `Prototypeable` structure is capable of being cloned and producing

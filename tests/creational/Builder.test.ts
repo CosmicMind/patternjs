@@ -1,7 +1,7 @@
 /**
  * BSD 3-Clause License
  *
- * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicverse dot org>
+ * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicmind dot org>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -36,7 +36,7 @@ import {
   guardFor,
   PickRequired,
   PickPartial,
-} from '@cosmicverse/foundation'
+} from '@cosmicmind/foundation'
 
 import { Builder } from '../../src'
 
