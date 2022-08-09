@@ -32,15 +32,11 @@
 
 import test from 'ava'
 
-import {
-  guardFor,
-  PickRequired,
-  PickPartial,
-} from '@cosmicmind/foundation'
+import { guardFor } from '@cosmicmind/foundation'
 
 import { Builder } from '../../src'
 
-interface Query {
+type Query = {
   project: string
   version: number
   tags?: string[]
