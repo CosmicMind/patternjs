@@ -36,7 +36,13 @@
     "src/**/*.ts",
     "tests/**/*.ts"
   ],
+  "exclude": [
+    "dist",
+    "node_modules",
+    "typings"
+  ],
   "typeRoots": [
+    "typings",
     "@types",
     "node_modules/@types"
   ]
