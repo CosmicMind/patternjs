@@ -1,16 +1,16 @@
 {
-  "name": "@cosmicmind/patterns",
+  "name": "@libs/patterns",
   "version": "0.0.1-rc-a",
   "description": "A library of Design Patterns in TypeScript.",
   "keywords": [],
   "author": {
     "name": "Daniel Jonathan",
-    "email": "daniel@cosmicmind.org"
+    "email": "daniel@cosmicmind.com"
   },
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/CosmicMind/Patterns.git"
+    "url": "https://github.com/cosmicmind/patterns.git"
   },
   "type": "module",
   "main": "dist/lib.es.js",
@@ -61,7 +61,7 @@
     "vite-tsconfig-paths": "^3.5.0"
   },
   "dependencies": {
-    "@cosmicmind/foundation": "^0.0.1-rc-zn",
+    "@libs/foundation": "^0.0.1-rc-zn",
     "dotenv": "^16.0.1"
   }
 }
