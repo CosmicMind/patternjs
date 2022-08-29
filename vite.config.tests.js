@@ -41,7 +41,7 @@ const formats = [ 'es' ]
 const external = [
   'ava',
   'eslint',
-  '@libs/foundation'
+  '@cosmicmind/lib-foundation'
 ]
 const globals = {}
 

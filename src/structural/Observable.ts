@@ -37,7 +37,7 @@
 import {
   async,
   guardFor,
-} from '@libs/foundation'
+} from '@cosmicmind/lib-foundation'
 
 export type ObservableFn<T> = (message: T) => void
 
