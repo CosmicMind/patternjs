@@ -42,6 +42,7 @@ export { Prototype } from './creational/Prototype'
 export type {
   ObservableFn,
   ObservableTopics,
+  ObservableTopicMap,
 } from './structural/Observable'
 
 export { Observable } from './structural/Observable'

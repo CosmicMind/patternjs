@@ -45,23 +45,25 @@ export type ObservableTopics = {
   readonly [K: string]: unknown
 }
 
-export abstract class Observable<T extends ObservableTopics> {
-  #topics: {
-    [K in keyof T]?: Set<ObservableFn<T[K]>>
-  }
+export type ObservableTopicMap<T extends ObservableTopics> = {
+  [K in keyof T]: Set<ObservableFn<T[K]>>
+}
 
-  constructor() {
-    this.#topics = {}
+export abstract class Observable<T extends ObservableTopics> {
+  protected readonly topics: Partial<ObservableTopicMap<T>>
+
+  protected constructor() {
+    this.topics = {}
   }
 
   subscribe<K extends keyof T>(topic: K, ...fn: ObservableFn<T[K]>[]): void {
-    if (!this.#topics[topic]) {
-      this.#topics[topic] = new Set()
+    if (!this.topics[topic]) {
+      this.topics[topic] = new Set()
     }
-    const topics = this.#topics[topic]
+    const topics = this.topics[topic]
     if (guardFor(topics)) {
       for (const cb of fn) {
-        topics.add(cb)
+        topics?.add(cb)
       }
     }
   }
@@ -77,11 +79,11 @@ export abstract class Observable<T extends ObservableTopics> {
   }
 
   unsubscribe<K extends keyof T>(topic: K, ...fn: ObservableFn<T[K]>[]): void {
-    if (this.#topics[topic]) {
-      const topics = this.#topics[topic]
+    if (this.topics[topic]) {
+      const topics = this.topics[topic]
       if (guardFor(topics)) {
         for (const cb of fn) {
-          topics.delete(cb)
+          topics?.delete(cb)
         }
       }
     }
@@ -89,9 +91,9 @@ export abstract class Observable<T extends ObservableTopics> {
 
   protected publish<K extends keyof T>(topic: K, message: T[K]): Promise<T[K]> {
     return async((): T[K] | never => {
-      const topics = this.#topics[topic]
+      const topics = this.topics[topic]
       if (guardFor(topics)) {
-        for (const f of topics) {
+        for (const f of Object.entries(topics)) {
           f(message)
         }
       }
@@ -100,7 +102,7 @@ export abstract class Observable<T extends ObservableTopics> {
   }
 
   protected publishSync<K extends keyof T>(topic: K, message: T[K]): void {
-    const topics = this.#topics[topic]
+    const topics = this.topics[topic]
     if (guardFor(topics)) {
       for (const f of topics) {
         f(message)

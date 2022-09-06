@@ -10,7 +10,7 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cosmicmind/patterns.git"
+    "url": "https://github.com/cosmicmind/lib-patterns.git"
   },
   "type": "module",
   "main": "dist/lib.es.js",
