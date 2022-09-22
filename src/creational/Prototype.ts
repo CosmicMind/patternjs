@@ -27,6 +27,6 @@ export abstract class Prototype implements Prototypeable {
    * Creates a copy of itself and returns it.
    */
   clone(): this {
-    return assign(Object.create(Object.getPrototypeOf(this) || null), this) as this
+    return assign(Object.create(Object.getPrototypeOf(this) ?? null), this) as this
   }
 }
