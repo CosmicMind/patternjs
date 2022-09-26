@@ -59,23 +59,22 @@ export abstract class Observable<T extends ObservableTopics> {
     }
   }
 
-  protected publish<K extends keyof T>(topic: K, message: T[K]): Promise<T[K]> {
-    return async((): T[K] | never => {
+  protected publish<K extends keyof T>(topic: K, message: T[K]): () => void {
+    return async((): void => {
       const topics = this.topics[topic]
       if (guardFor(topics)) {
-        for (const f of Object.entries(topics)) {
-          f(message)
+        for (const fn of topics) {
+          fn(message)
         }
       }
-      return message
     })
   }
 
   protected publishSync<K extends keyof T>(topic: K, message: T[K]): void {
     const topics = this.topics[topic]
     if (guardFor(topics)) {
-      for (const f of topics) {
-        f(message)
+      for (const fn of topics) {
+        fn(message)
       }
     }
   }
