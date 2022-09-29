@@ -1,4 +1,4 @@
-// Copyright (C) 2022, CosmicMind, Inc. <http://cosmicmind.com>. All rights reserved.
+/* Copyright (C) 2022, CosmicMind, Inc. <http://cosmicmind.com>. All rights reserved. */
 
 export type { Identifiable } from './interfaces/Identifiable'
 export type { Nameable } from './interfaces/Nameable'
