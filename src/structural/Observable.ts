@@ -7,7 +7,7 @@
 import {
   async,
   guardFor,
-} from '@cosmicverse/foundation'
+} from '@cosmicmind/foundation'
 
 export type ObservableFn<T> = (message: T) => void
 

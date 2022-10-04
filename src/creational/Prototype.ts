@@ -4,7 +4,7 @@
  * @module Prototype
  */
 
-import { assign } from '@cosmicverse/foundation'
+import { assign } from '@cosmicmind/foundation'
 
 /**
  * A `Prototypeable` structure is capable of being cloned and producing
