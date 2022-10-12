@@ -55,7 +55,7 @@ describe('Prototype', () => {
     const location = 'CR'
     const a = new A(name, count, location)
     const b = a.clone()
-    expect(a).toBe(b)
+    expect(a).not.toBe(b)
   })
 
   it('Prototype: clone equal to clone', () =>  {
