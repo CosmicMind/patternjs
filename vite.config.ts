@@ -1,11 +1,12 @@
 import {
-URL,
-fileURLToPath
+  URL,
+  fileURLToPath,
 } from 'node:url'
 
 import {
-defineConfig,
-LibraryFormats
+  defineConfig,
+  LibraryFormats,
+  UserConfigExport,
 } from 'vite'
 
 import dts from 'vite-plugin-dts'
@@ -14,20 +15,18 @@ const external = [
   '@cosmicmind/foundation'
 ]
 const globals = {}
-const emptyOutDir = true
+const srcDir = './src'
+const emptyOutDir = false
 const formats: LibraryFormats[] = [ 'es' ]
 
-export default defineConfig(({ mode }) => {
-  const watch = 'watch' === mode ? {
-    include: [
-      './src/**/*'
-    ],
-  }: undefined
-
-  return {
+export default defineConfig(({
+  mode,
+}) => {
+  const minify = 'production' === mode
+  const config: UserConfigExport = {
     resolve: {
       alias: {
-        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '@': fileURLToPath(new URL(srcDir, import.meta.url)),
       },
     },
     plugins: [
@@ -37,7 +36,7 @@ export default defineConfig(({ mode }) => {
       emptyOutDir,
       lib: {
         name: process.env.npm_package_name,
-        entry: './src/index.ts',
+        entry: `${srcDir}/index.ts`,
         formats,
         fileName: 'lib.es',
       },
@@ -47,7 +46,9 @@ export default defineConfig(({ mode }) => {
           globals,
         },
       },
-      watch,
+      minify,
     },
   }
+
+  return config
 })
