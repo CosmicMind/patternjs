@@ -1,6 +1,6 @@
 {
-  "name": "@cosmicverse/patterns",
-  "version": "0.0.1-rc-11722-2",
+  "name": "@cosmicmind/patternjs",
+  "version": "0.0.1-rc-020123-1",
   "description": "A library of Design Patterns in TypeScript.",
   "keywords": [],
   "author": {
@@ -10,7 +10,10 @@
   "license": "BSD-3-Clause",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cosmicverse/foundationpatterns.git"
+    "url": "https://github.com/cosmicmind/patternjs.git"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "type": "module",
   "main": "dist/lib.es.js",
@@ -18,25 +21,27 @@
   "types": "dist/index.d.ts",
   "files": [
     "dist",
+    "typings",
     "LICENSE",
-    "package.json",
-    "package-lock.json",
     "README.md",
-    "tsconfig.json"
+    "package.json"
   ],
   "scripts": {
-    "lint:exec": "eslint . --ext .ts",
-    "lint:fix": "eslint . --fix --ext .ts",
-    "test": "npm run tests:build; npm run tests:exec",
-    "tests:build": "vite build --config vite.config.tests.js --mode development",
-    "tests:watch": "vite build --config vite.config.tests.js --mode watch",
-    "tests:exec": "c8 ava dist/lib.es.tests.js",
-    "dev:build": "vite build --config vite.config.lib.js --mode development",
-    "dev:watch": "vite build --config vite.config.lib.js --mode watch",
-    "release:build:lib": "vite build --config vite.config.lib.js --mode production",
-    "release:build": "npm run release:build:lib",
-    "package:build": "npm run release:build",
-    "package:publish": "npm publish"
+    "lint": "eslint --fix --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts",
+    "build": "run-s build:lib",
+    "build:lib": "vite build --config vite.config.lib.ts --mode production",
+    "watch": "run-p watch:lib",
+    "watch:lib": "vite build --watch --config vite.config.lib.ts --mode development",
+    "dev": "run-s dev:build",
+    "dev:build": "run-s dev:build:lib",
+    "dev:build:lib": "vite build --config vite.config.lib.ts --mode development",
+    "test": "run-s test:unit",
+    "test:unit": "vitest run --config vite.config.lib.ts --mode development",
+    "test:watch": "vitest --config vite.config.lib.ts --mode development",
+    "test:coverage": "vitest run --coverage --config vite.config.lib.ts --mode development"
+  },
+  "dependencies": {
+    "@cosmicmind/foundationjs": "^0.0.1-rc-020123-1"
   },
   "devDependencies": {
     "@microsoft/eslint-formatter-sarif": "^3.0.0",
@@ -44,19 +49,17 @@
     "@typescript-eslint/eslint-plugin": "^5.36.1",
     "@typescript-eslint/parser": "^5.36.1",
     "@vitejs/plugin-vue": "^3.1.0",
+    "@vitest/coverage-c8": "^0.23.4",
     "@vue/compiler-sfc": "^3.2.38",
     "@vue/eslint-config-typescript": "^11.0.0",
-    "ava": "^4.3.3",
-    "c8": "^7.12.0",
-    "eslint": "^8.22.0",
+    "eslint": "^8.24.0",
     "eslint-plugin-yml": "^1.1.0",
+    "npm-run-all": "^4.1.5",
     "ts-node": "^10.9.1",
     "tslib": "^2.4.0",
-    "vite": "^3.1.0",
+    "typescript": "^4.8.3",
+    "vite": "^3.1.3",
     "vite-plugin-dts": "^1.4.1",
-    "vite-tsconfig-paths": "^3.5.0"
-  },
-  "dependencies": {
-
+    "vitest": "^0.23.0"
   }
 }

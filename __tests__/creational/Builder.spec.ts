@@ -1,7 +1,7 @@
 /**
  * BSD 3-Clause License
  *
- * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicmind dot org>
+ * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicmind dot com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,11 +24,74 @@
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * SERVICES LOSS OF USE, DATA, OR PROFITS OR BUSINESS INTERRUPTION) HOWEVER
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export * from './creational/Builder.test'
-export * from './creational/Prototype.test'
+import {
+it,
+expect,
+describe
+} from 'vitest'
+
+import { guardFor } from '@cosmicmind/foundationjs'
+
+import { Builder } from '../../src'
+
+type Query = {
+  project: string
+  version: number
+  tags?: string[]
+}
+
+const project = 'projects'
+const version = 1
+const tags = [
+  'typescript',
+  'coding',
+  'language'
+]
+
+describe('Builder', () => {
+  it('set', () => {
+    const qb = new Builder<Query>({
+      project,
+      version,
+    })
+
+    qb.set('tags', tags)
+
+    const q = qb.build()
+
+    expect(guardFor(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
+
+    expect(project).toBe(q.project)
+    expect(version).toBe(q.version)
+
+    expect('undefined' !== typeof q.tags).toBeTruthy()
+    expect(tags).toBe(q.tags as string[])
+  })
+
+  it('map', () => {
+    const qb = new Builder<Query>({
+      project,
+      version,
+    })
+
+    qb.map({
+      tags,
+    })
+
+    const q = qb.build()
+
+    expect(guardFor(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
+
+    expect(project).toBe(q.project)
+    expect(version).toBe(q.version)
+
+    expect('undefined' !== typeof q.tags).toBeTruthy()
+    expect(tags).toBe(q.tags as string[])
+  })
+})

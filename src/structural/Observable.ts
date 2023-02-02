@@ -1,7 +1,7 @@
 /**
  * BSD 3-Clause License
  *
- * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicmind dot org>
+ * Copyright (c) 2022, Daniel Jonathan <daniel at cosmicmind dot com>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -24,7 +24,7 @@
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+ * SERVICES LOSS OF USE, DATA, OR PROFITS OR BUSINESS INTERRUPTION) HOWEVER
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -35,9 +35,9 @@
  */
 
 import {
-  async,
-  guardFor,
-} from '@cosmicverse/foundation'
+async,
+guardFor
+} from '@cosmicmind/foundationjs'
 
 export type ObservableFn<T> = (message: T) => void
 
@@ -89,23 +89,22 @@ export abstract class Observable<T extends ObservableTopics> {
     }
   }
 
-  protected publish<K extends keyof T>(topic: K, message: T[K]): Promise<T[K]> {
-    return async((): T[K] | never => {
+  protected publish<K extends keyof T>(topic: K, message: T[K]): () => void {
+    return async((): void => {
       const topics = this.topics[topic]
       if (guardFor(topics)) {
-        for (const f of Object.entries(topics)) {
-          f(message)
+        for (const fn of topics) {
+          fn(message)
         }
       }
-      return message
     })
   }
 
   protected publishSync<K extends keyof T>(topic: K, message: T[K]): void {
     const topics = this.topics[topic]
     if (guardFor(topics)) {
-      for (const f of topics) {
-        f(message)
+      for (const fn of topics) {
+        fn(message)
       }
     }
   }
