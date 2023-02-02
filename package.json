@@ -41,11 +41,7 @@
     "test:coverage": "vitest run --coverage --config vite.config.lib.ts --mode development"
   },
   "dependencies": {
-<<<<<<< HEAD
     "@cosmicmind/foundationjs": "^0.0.1-rc-020123-2"
-=======
-    "@cosmicmind/foundationjs": "^0.0.1-rc-020123-1"
->>>>>>> release
   },
   "devDependencies": {
     "@microsoft/eslint-formatter-sarif": "^3.0.0",
