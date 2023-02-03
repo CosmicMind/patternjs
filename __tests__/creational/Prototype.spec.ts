@@ -31,15 +31,15 @@
  */
 
 import {
-it,
-expect,
-describe
+  it,
+  expect,
+  describe,
 } from 'vitest'
 
-import { Prototype } from '../../src'
+import { Prototype } from '@/internal'
 
 class A extends Prototype {
-  private _name: string
+  private readonly _name: string
   readonly count: number
   readonly location: string
 

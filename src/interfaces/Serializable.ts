@@ -38,7 +38,7 @@
  * The `Serializable` protocol defines the implementation
  * criteria that adheres to the given protocol.
  */
-export interface Serializable {
+export type Serializable = {
   /**
    * Converts the implementation class to a serialized value.
    */

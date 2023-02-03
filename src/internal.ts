@@ -30,14 +30,15 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/**
- * @module Versionable
- */
+export type { Serializable } from '@/interfaces/Serializable'
 
-/**
- * A `Versionable` structure is capable of being identified by a
- * particular version value.
- */
-export interface Versionable<T extends number | string> {
-  version: T
-}
+export { Builder } from '@/creational/Builder'
+export { Prototype } from '@/creational/Prototype'
+
+export type {
+  ObservableFn,
+  ObservableTopics,
+  ObservableTopicMap,
+} from '@/structural/Observable'
+
+export { Observable } from '@/structural/Observable'
