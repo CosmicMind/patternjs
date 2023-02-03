@@ -31,14 +31,14 @@
  */
 
 import {
-it,
-expect,
-describe
+  it,
+  expect,
+  describe,
 } from 'vitest'
 
 import { guardFor } from '@cosmicmind/foundationjs'
 
-import { Builder } from '../../src'
+import { Builder } from '@/internal'
 
 type Query = {
   project: string

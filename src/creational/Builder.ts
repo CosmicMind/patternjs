@@ -38,7 +38,7 @@
  * A `Buildable` structure is capable of constructing an instance
  * in multiple steps.
  */
-export interface Buildable<T> {
+export type Buildable<T> = {
   /**
    * Creates a concrete instance of type `T`.
    */
