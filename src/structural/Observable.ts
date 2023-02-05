@@ -36,7 +36,7 @@
 
 import {
   async,
-  guardFor,
+  guard,
 } from '@cosmicmind/foundationjs'
 
 export type ObservableFn<T> = (message: T) => void
@@ -61,7 +61,7 @@ export abstract class Observable<T extends ObservableTopics> {
       this.topics[topic] = new Set()
     }
     const topics = this.topics[topic]
-    if (guardFor(topics)) {
+    if (guard(topics)) {
       for (const cb of fn) {
         topics?.add(cb)
       }
@@ -81,7 +81,7 @@ export abstract class Observable<T extends ObservableTopics> {
   unsubscribe<K extends keyof T>(topic: K, ...fn: ObservableFn<T[K]>[]): void {
     if (this.topics[topic]) {
       const topics = this.topics[topic]
-      if (guardFor(topics)) {
+      if (guard(topics)) {
         for (const cb of fn) {
           topics?.delete(cb)
         }
@@ -92,7 +92,7 @@ export abstract class Observable<T extends ObservableTopics> {
   protected publish<K extends keyof T>(topic: K, message: T[K]): () => void {
     return async((): void => {
       const topics = this.topics[topic]
-      if (guardFor(topics)) {
+      if (guard<Set<ObservableFn<T[K]>>>(topics)) {
         for (const fn of topics) {
           fn(message)
         }
@@ -102,7 +102,7 @@ export abstract class Observable<T extends ObservableTopics> {
 
   protected publishSync<K extends keyof T>(topic: K, message: T[K]): void {
     const topics = this.topics[topic]
-    if (guardFor(topics)) {
+    if (guard<Set<ObservableFn<T[K]>>>(topics)) {
       for (const fn of topics) {
         fn(message)
       }

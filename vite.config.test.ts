@@ -24,74 +24,48 @@
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
  * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
  * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES LOSS OF USE, DATA, OR PROFITS OR BUSINESS INTERRUPTION) HOWEVER
+ * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
  * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+/// <reference types="vitest" />
+
 import {
-  it,
-  expect,
-  describe,
-} from 'vitest'
+  URL,
+  fileURLToPath,
+} from 'node:url'
 
-import { guard } from '@cosmicmind/foundationjs'
+import {
+  defineConfig,
+  UserConfigExport,
+} from 'vite'
 
-import { Builder } from '@/internal'
+const srcDir = './src'
+const distDir = './dist'
+const testsDir = '__tests__'
+const benchmarksDir = '__benchmarks__'
 
-type Query = {
-  project: string
-  version: number
-  tags?: string[]
-}
-
-const project = 'projects'
-const version = 1
-const tags = [
-  'typescript',
-  'coding',
-  'language'
-]
-
-describe('Builder', () => {
-  it('set', () => {
-    const qb = new Builder<Query>({
-      project,
-      version,
-    })
-
-    qb.set('tags', tags)
-
-    const q = qb.build()
-
-    expect(guard(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
-
-    expect(project).toBe(q.project)
-    expect(version).toBe(q.version)
-
-    expect('undefined' !== typeof q.tags).toBeTruthy()
-    expect(tags).toBe(q.tags as string[])
-  })
-
-  it('map', () => {
-    const qb = new Builder<Query>({
-      project,
-      version,
-    })
-
-    qb.map({
-      tags,
-    })
-
-    const q = qb.build()
-
-    expect(guard(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
-
-    expect(project).toBe(q.project)
-    expect(version).toBe(q.version)
-
-    expect('undefined' !== typeof q.tags).toBeTruthy()
-    expect(tags).toBe(q.tags as string[])
-  })
+export default defineConfig(() => {
+  const config: UserConfigExport = {
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL(srcDir, import.meta.url)),
+      },
+    },
+    test: {
+      include: [ `${testsDir}/**/*.spec.ts` ],
+      benchmark: {
+        include: [ `${benchmarksDir}/**/*.bench.ts` ],
+        outputFile: `${distDir}/benchmarks.json`,
+      },
+      coverage: {
+        provider: 'c8',
+        include: [ '**/src/**' ],
+        extension: [ '.ts' ],
+      },
+    },
+  }
+  return config
 })
