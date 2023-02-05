@@ -36,7 +36,7 @@ import {
   describe,
 } from 'vitest'
 
-import { guardFor } from '@cosmicmind/foundationjs'
+import { guard } from '@cosmicmind/foundationjs'
 
 import { Builder } from '@/internal'
 
@@ -65,7 +65,7 @@ describe('Builder', () => {
 
     const q = qb.build()
 
-    expect(guardFor(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
+    expect(guard(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
 
     expect(project).toBe(q.project)
     expect(version).toBe(q.version)
@@ -86,7 +86,7 @@ describe('Builder', () => {
 
     const q = qb.build()
 
-    expect(guardFor(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
+    expect(guard(q, ...Object.keys(q) as (keyof Query)[])).toBeTruthy()
 
     expect(project).toBe(q.project)
     expect(version).toBe(q.version)
