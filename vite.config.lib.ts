@@ -18,7 +18,11 @@
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
+<<<<<<< HEAD
+ * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
+=======
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+>>>>>>> c90dd463c211ada01bf8a63c9dc9af3e9a165717
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
@@ -44,17 +48,18 @@ import {
 import dts from 'vite-plugin-dts'
 
 const external = [
-  '@cosmicmind/foundationjs'
+  '@cosmicmind/domainjs',
+  '@cosmicmind/foundationjs',
+  '@cosmicmind/materialjs',
+  '@cosmicmind/patternjs'
 ]
 
-const srcDir = './src'
+const srcDir = 'src'
 const emptyOutDir = false
 const formats: LibraryFormats[] = [ 'es' ]
 
-export default defineConfig(({
-  mode,
-}) => {
-  const minify = 'production' === mode
+export default defineConfig(() => {
+  const minify = 'production' === process.env.NODE_ENV
   const config: UserConfigExport = {
     resolve: {
       alias: {
