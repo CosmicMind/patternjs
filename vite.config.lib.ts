@@ -18,11 +18,7 @@
  *    contributors may be used to endorse or promote products derived from
  *    this software without specific prior written permission.
  *
-<<<<<<< HEAD
- * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 'AS IS'
-=======
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
->>>>>>> c90dd463c211ada01bf8a63c9dc9af3e9a165717
  * AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
  * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
  * DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
@@ -40,48 +36,49 @@ import {
 } from 'node:url'
 
 import {
-  defineConfig,
+  PluginOption,
   LibraryFormats,
-  UserConfigExport,
+  defineConfig,
 } from 'vite'
 
 import dts from 'vite-plugin-dts'
 
+const name = process.env.npm_package_name
+const srcDir = 'src'
+const entry = `${srcDir}/index.ts`
+const output = 'lib.es'
+const formats: LibraryFormats[] = [ 'es' ]
+const emptyOutDir = false
+const minify = 'development' !== process.env.NODE_ENV
+
+const alias = {
+  '@': fileURLToPath(new URL(srcDir, import.meta.url)),
+}
+
 const external = [
-  '@cosmicmind/domainjs',
-  '@cosmicmind/foundationjs',
-  '@cosmicmind/materialjs',
-  '@cosmicmind/patternjs'
+  '@cosmicmind/foundationjs'
 ]
 
-const srcDir = 'src'
-const emptyOutDir = false
-const formats: LibraryFormats[] = [ 'es' ]
+const plugins = [
+  dts()
+] as PluginOption[]
 
-export default defineConfig(() => {
-  const minify = 'production' === process.env.NODE_ENV
-  const config: UserConfigExport = {
-    resolve: {
-      alias: {
-        '@': fileURLToPath(new URL(srcDir, import.meta.url)),
-      },
+export default defineConfig(() => ({
+  resolve: {
+    alias,
+  },
+  plugins,
+  build: {
+    emptyOutDir,
+    lib: {
+      name,
+      entry,
+      formats,
+      fileName: output,
     },
-    plugins: [
-      dts()
-    ],
-    build: {
-      emptyOutDir,
-      lib: {
-        name: process.env.npm_package_name,
-        entry: `${srcDir}/index.ts`,
-        formats,
-        fileName: 'lib.es',
-      },
-      rollupOptions: {
-        external,
-      },
-      minify,
+    rollupOptions: {
+      external,
     },
-  }
-  return config
-})
+    minify,
+  },
+}))
