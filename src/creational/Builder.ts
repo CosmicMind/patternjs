@@ -79,6 +79,6 @@ export class Builder<T, K extends keyof T = keyof T> implements Buildable<T> {
   }
 
   #clear(): void {
-    this.#props = {} as T
+    this.#props
   }
 }
