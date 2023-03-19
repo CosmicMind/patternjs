@@ -49,10 +49,10 @@ export type ObservableTopicMap<T extends ObservableTopics> = {
   [K in keyof T]: Set<ObservableFn<T[K]>>
 }
 
-export abstract class Observable<T extends ObservableTopics> {
+export class Observable<T extends ObservableTopics> {
   protected readonly topics: Partial<ObservableTopicMap<T>>
 
-  protected constructor() {
+  constructor() {
     this.topics = {}
   }
 
