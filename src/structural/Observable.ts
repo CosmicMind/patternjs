@@ -35,7 +35,7 @@
  */
 
 import {
-  async,
+  timeout,
   guard,
 } from '@cosmicmind/foundationjs'
 
@@ -90,7 +90,7 @@ export class Observable<T extends ObservableTopics> {
   }
 
   protected publish<K extends keyof T>(topic: K, message: T[K]): () => void {
-    return async((): void => {
+    return timeout((): void => {
       const topics = this.topics[topic]
       if (guard<Set<ObservableFn<T[K]>>>(topics)) {
         for (const fn of topics) {
