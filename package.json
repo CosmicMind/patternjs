@@ -1,6 +1,6 @@
 {
   "name": "@cosmicmind/patternjs",
-  "version": "0.0.1-rc-060223-3",
+  "version": "0.0.1-rc-070423-3-a",
   "description": "A library of Design Patterns in TypeScript.",
   "keywords": [],
   "author": {
@@ -44,7 +44,7 @@
     "test:coverage": "vitest run --coverage --config vite.config.test.ts --mode ${VITE_MODE:-test}"
   },
   "dependencies": {
-    "@cosmicmind/foundationjs": "^0.0.1-rc-062123-1"
+    "@cosmicmind/foundationjs": "^0.0.1-rc-070423-1-a"
   },
   "devDependencies": {
     "@microsoft/eslint-formatter-sarif": "^3.0.0",
