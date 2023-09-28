@@ -30,15 +30,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-export type { Serializable } from '@/interfaces/Serializable'
-
-export { Builder } from '@/creational/Builder'
-export { Prototype } from '@/creational/Prototype'
-
-export type {
-  ObservableFn,
-  ObservableTopics,
-  ObservableTopicMap,
-} from '@/structural/Observable'
-
-export { Observable } from '@/structural/Observable'
+export * from '@/interfaces/Serializable'
+export * from '@/creational/Builder'
+export * from '@/creational/Prototype'
+export * from '@/structural/Observable'

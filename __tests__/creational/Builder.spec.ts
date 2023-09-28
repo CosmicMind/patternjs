@@ -38,7 +38,7 @@ import {
 
 import { guard } from '@cosmicmind/foundationjs'
 
-import { Builder } from '@/internal'
+import { Builder } from '@/index'
 
 type Query = {
   project: string
