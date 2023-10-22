@@ -39,14 +39,12 @@ import {
   guard,
 } from '@cosmicmind/foundationjs'
 
-export type ObservableFn<T> = (message: T) => void
-
 export type ObservableTopics = {
   readonly [K: string]: unknown
 }
 
 export type ObservableTopicMap<T extends ObservableTopics> = {
-  [K in keyof T]: Set<ObservableFn<T[K]>>
+  [K in keyof T]: Set<((message: T[K]) => void)>
 }
 
 export class Observable<T extends ObservableTopics> {
@@ -56,7 +54,7 @@ export class Observable<T extends ObservableTopics> {
     this.topics = {}
   }
 
-  subscribe<K extends keyof T>(topic: K, ...fn: ObservableFn<T[K]>[]): void {
+  subscribe<K extends keyof T>(topic: K, ...fn: ((message: T[K]) => void)[]): void {
     if (!this.topics[topic]) {
       this.topics[topic] = new Set()
     }
@@ -68,7 +66,7 @@ export class Observable<T extends ObservableTopics> {
     }
   }
 
-  once<K extends keyof T>(topic: K, ...fn: ObservableFn<T[K]>[]): void {
+  once<K extends keyof T>(topic: K, ...fn: ((message: T[K]) => void)[]): void {
     const cb = (message: T[K]): void => {
       this.unsubscribe(topic, cb)
       for (const cb of fn) {
@@ -78,7 +76,7 @@ export class Observable<T extends ObservableTopics> {
     this.subscribe(topic, cb)
   }
 
-  unsubscribe<K extends keyof T>(topic: K, ...fn: ObservableFn<T[K]>[]): void {
+  unsubscribe<K extends keyof T>(topic: K, ...fn: ((message: T[K]) => void)[]): void {
     if (this.topics[topic]) {
       const topics = this.topics[topic]
       if (guard(topics)) {
@@ -91,8 +89,8 @@ export class Observable<T extends ObservableTopics> {
 
   protected publish<K extends keyof T>(topic: K, message: T[K]): () => void {
     return timeout((): void => {
-      const topics = this.topics[topic]
-      if (guard<Set<ObservableFn<T[K]>>>(topics)) {
+      const topics = this.topics[topic] as Set<((message: T[K]) => void)>
+      if (guard(topics)) {
         for (const fn of topics) {
           fn(message)
         }
@@ -101,8 +99,8 @@ export class Observable<T extends ObservableTopics> {
   }
 
   protected publishSync<K extends keyof T>(topic: K, message: T[K]): void {
-    const topics = this.topics[topic]
-    if (guard<Set<ObservableFn<T[K]>>>(topics)) {
+    const topics = this.topics[topic] as Set<((message: T[K]) => void)>
+    if (guard(topics)) {
       for (const fn of topics) {
         fn(message)
       }
