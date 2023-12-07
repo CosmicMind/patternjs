@@ -36,7 +36,7 @@ import {
   describe,
 } from 'vitest'
 
-import { Prototype } from '@/'
+import { Prototype } from '@/index'
 
 class A extends Prototype {
   private readonly _name: string
