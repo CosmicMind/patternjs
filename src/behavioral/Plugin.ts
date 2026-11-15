@@ -35,37 +35,37 @@
  */
 
 export type Pluginable<T> = {
-  /**
+    /**
    * Returns the name as a string.
    *
    * @returns {string} The name.
    */
-  get name(): string
+    get name(): string
 
-  /**
+    /**
    * Executes the method with the given arguments.
    *
    * @param {...T} args - The arguments to be passed to the method.
    * @return {void}
    */
-  execute(...args: T[]): void
+    execute(...args: T[]): void
 }
 
 export abstract class Plugin<T> implements Pluginable<T> {
-  /**
+    /**
    * Retrieves the name.
    *
    * @returns {string} The name.
    */
-  abstract get name(): string
+    abstract get name(): string
 
-  /**
+    /**
    * Executes the function with the given arguments.
    *
    * @param {...T} args - The arguments to be passed to the function.
    * @return {void}
    */
-  abstract execute(...args: T[]): void
+    abstract execute(...args: T[]): void
 }
 
 export class PluginManager<T> {
@@ -75,30 +75,36 @@ export class PluginManager<T> {
         this.plugins = []
     }
 
+    /** Registers all supplied plugins with new names; returns whether any were added. */
     register(...plugins: Plugin<T>[]): boolean {
+        let changed = false
+
         for (const plugin of plugins) {
             const i = this.indexOf(plugin)
 
             if (-1 === i) {
                 this.plugins.push(plugin)
-                return true
+                changed = true
             }
         }
 
-        return false
+        return changed
     }
 
+    /** Removes all supplied plugin names; returns whether any were removed. */
     deregister(...plugins: Plugin<T>[] | string[]): boolean {
+        let changed = false
+
         for (const plugin of plugins) {
             const i = this.indexOf(plugin)
 
             if (-1 < i) {
                 this.plugins.splice(i, 1)
-                return true
+                changed = true
             }
         }
 
-        return false
+        return changed
     }
 
     /**

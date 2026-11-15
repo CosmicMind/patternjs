@@ -41,78 +41,101 @@ import {
     PluginManager,
 } from '@/index'
 
-type Data = {
-  prop: number
-}
+class RecordingPlugin extends Plugin<string[]> {
+    constructor(private readonly pluginName: string) {
+        super()
+    }
 
-class PluginA extends Plugin<Data> {
     get name(): string {
-        return 'Plugin A'
+        return this.pluginName
     }
 
-    execute(data: Data): void {
-        ++data.prop
-    }
-}
-
-class PluginB extends Plugin<Data> {
-    get name(): string {
-        return 'Plugin B'
-    }
-
-    execute(data: Data): void {
-        data.prop += 2
-    }
-}
-
-describe('Plugin', () => {
-    it('plugin execution', () => {
-        const pm = new PluginManager<Data>()
-
-        const a = new PluginA()
-        const b = new PluginB()
-
-        const data = {
-            prop: 0,
+    execute(...logs: string[][]): void {
+        for (const log of logs) {
+            log.push(this.name)
         }
+    }
+}
 
-        expect(pm.register(a)).toBeTruthy()
-        expect(pm.register(a)).toBeFalsy()
+describe('PluginManager', () => {
+    it('registers every supplied plugin and executes them in order with all arguments', () => {
+        const manager = new PluginManager<string[]>()
+        const first = new RecordingPlugin('first')
+        const second = new RecordingPlugin('second')
+        const third = new RecordingPlugin('third')
+        const left: string[] = []
+        const right: string[] = []
 
-        expect(pm.register(b)).toBeTruthy()
-        expect(pm.register(b)).toBeFalsy()
+        expect(manager.register(first, second, third)).toBe(true)
+        manager.execute(left, right)
 
-        expect(pm.deregister('bogus plugin')).toBeFalsy()
-
-        pm.execute(data)
-
-        expect(data.prop).toBe(3)
+        expect(left).toEqual(['first', 'second', 'third'])
+        expect(right).toEqual(left)
     })
 
-    it('plugin removal', () => {
-        const pm = new PluginManager<Data>()
+    it('skips duplicate names without skipping later registrations', () => {
+        const manager = new PluginManager<string[]>()
+        const first = new RecordingPlugin('first')
+        const second = new RecordingPlugin('second')
+        const third = new RecordingPlugin('third')
+        const log: string[] = []
 
-        const a = new PluginA()
-        const b = new PluginB()
+        expect(manager.register(first)).toBe(true)
+        expect(manager.register(
+            new RecordingPlugin('first'),
+            second,
+            new RecordingPlugin('second'),
+            third
+        )).toBe(true)
+        expect(manager.register(first, second, third)).toBe(false)
 
-        const data = {
-            prop: 0,
-        }
+        manager.execute(log)
+        expect(log).toEqual(['first', 'second', 'third'])
+    })
 
-        expect(pm.register(a)).toBeTruthy()
-        expect(pm.register(a)).toBeFalsy()
+    it.each(['objects', 'names'] as const)('removes every supplied plugin by %s and retains unmentioned plugins', (kind) => {
+        const manager = new PluginManager<string[]>()
+        const first = new RecordingPlugin('first')
+        const second = new RecordingPlugin('second')
+        const third = new RecordingPlugin('third')
+        const missing = new RecordingPlugin('missing')
+        const log: string[] = []
 
-        expect(pm.register(b)).toBeTruthy()
-        expect(pm.register(b)).toBeFalsy()
+        manager.register(first)
+        manager.register(second)
+        manager.register(third)
 
-        expect(pm.deregister(a)).toBeTruthy()
-        expect(pm.deregister(a.name)).toBeFalsy()
+        const removed = kind === 'objects'
+            ? manager.deregister(missing, new RecordingPlugin('first'), first, second)
+            : manager.deregister(missing.name, first.name, first.name, second.name)
 
-        pm.execute(data)
+        expect(removed).toBe(true)
+        expect(manager.deregister(first, second)).toBe(false)
+        manager.execute(log)
+        expect(log).toEqual(['third'])
+    })
 
-        expect(data.prop).toBe(2)
+    it('reports false for empty calls and missing removals', () => {
+        const manager = new PluginManager<string[]>()
 
-        expect(pm.deregister(b.name)).toBeTruthy()
-        expect(pm.deregister(a)).toBeFalsy()
+        expect(manager.register()).toBe(false)
+        expect(manager.deregister()).toBe(false)
+        expect(manager.deregister(new RecordingPlugin('missing'))).toBe(false)
+        expect(manager.deregister('missing', 'also missing')).toBe(false)
+    })
+
+    it('allows an individually removed name to be registered again at the end', () => {
+        const manager = new PluginManager<string[]>()
+        const first = new RecordingPlugin('first')
+        const second = new RecordingPlugin('second')
+        const log: string[] = []
+
+        expect(manager.register(first)).toBe(true)
+        expect(manager.register(second)).toBe(true)
+        expect(manager.deregister(first.name)).toBe(true)
+        expect(manager.register(new RecordingPlugin(first.name))).toBe(true)
+
+        manager.execute(log)
+        expect(log).toEqual(['second', 'first'])
     })
 })
